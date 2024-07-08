@@ -1,7 +1,6 @@
 package com.hilguener.marvelsuperheroes.domain.model.character
 
-data class ItemXXX(
+data class SeriesItem(
     val name: String,
-    val resourceURI: String,
-    val type: String
+    val resourceURI: String
 )

@@ -1,8 +1,10 @@
 package com.hilguener.marvelsuperheroes.domain.model.character
 
+import com.google.gson.annotations.SerializedName
+
 data class Stories(
-    val available: Int,
-    val collectionURI: String,
-    val items: List<ItemXXX>,
-    val returned: Int
+    @SerializedName("available") val available: Int,
+    @SerializedName("collectionURI") val collectionURI: String,
+    @SerializedName("items") val items: List<StoryItem>,
+    @SerializedName("returned") val returned: Int
 )
