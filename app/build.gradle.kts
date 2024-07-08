@@ -63,11 +63,12 @@ dependencies {
     implementation(libs.androidx.material3)
 
 
+    //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-
-    implementation(libs.koin.bom)
+    //Koin
     implementation(libs.koin.core)
+    //Glide
     implementation(libs.compose)
 
 
