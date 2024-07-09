@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -19,6 +21,16 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "MARVEL_API_KEY", properties.getProperty("MARVEL_API_KEY"))
+        buildConfigField(
+            "String",
+            "MARVEL_PRIVATE_KEY",
+            properties.getProperty("MARVEL_PRIVATE_KEY")
+        )
+
+
     }
 
     buildTypes {
@@ -40,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -66,8 +79,9 @@ dependencies {
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
     //Koin
-    implementation(libs.koin.core)
+    implementation (libs.koin.android)
     //Glide
     implementation(libs.compose)
 
