@@ -84,6 +84,7 @@ dependencies {
     implementation (libs.koin.android)
     //Glide
     implementation(libs.compose)
+    implementation(libs.androidx.navigation.compose)
 
 
     testImplementation(libs.junit)
