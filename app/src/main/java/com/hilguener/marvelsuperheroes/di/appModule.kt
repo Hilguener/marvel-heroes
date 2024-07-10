@@ -7,7 +7,7 @@ import com.hilguener.marvelsuperheroes.data.repository.HttpRepositoryImpl
 import com.hilguener.marvelsuperheroes.data.util.Constants
 import com.hilguener.marvelsuperheroes.domain.usecase.GetCharactersUseCase
 import com.hilguener.marvelsuperheroes.domain.usecase.ManagerUseCase
-import com.hilguener.marvelsuperheroes.presentation.MainViewModel
+import com.hilguener.marvelsuperheroes.presentation.viewmodel.MainViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
