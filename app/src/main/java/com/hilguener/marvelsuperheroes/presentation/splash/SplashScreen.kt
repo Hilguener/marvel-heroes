@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation
+package com.hilguener.marvelsuperheroes.presentation.splash
 
 
 import androidx.compose.animation.core.Animatable
@@ -13,7 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.hilguener.marvelsuperheroes.R
 import kotlinx.coroutines.delay
@@ -32,8 +34,8 @@ fun SplashScreen(navController: NavController) {
             )
         )
         delay(3000L)
-        navController.navigate("main_screen"){
-            popUpTo("splash_screen"){
+        navController.navigate("sign_in_screen") {
+            popUpTo("splash_screen") {
                 inclusive = true
             }
         }
@@ -45,4 +47,12 @@ fun SplashScreen(navController: NavController) {
             modifier = Modifier.scale(scale.value)
         )
     }
+}
+
+@Preview
+@Composable
+fun SplashScreenPreview() {
+    val context = LocalContext.current
+    val navController = NavController(context)
+    SplashScreen(navController = navController)
 }
