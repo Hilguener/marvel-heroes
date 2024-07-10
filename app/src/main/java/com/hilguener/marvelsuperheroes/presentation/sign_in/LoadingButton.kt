@@ -28,7 +28,7 @@ fun LoadingButton(
         colors = ButtonDefaults.buttonColors(Color.Red)
     ) {
         if (isLoading) {
-            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(25.dp))
+            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
         } else {
             Text(
                 text = text,

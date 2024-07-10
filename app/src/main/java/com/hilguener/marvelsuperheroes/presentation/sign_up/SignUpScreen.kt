@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
@@ -48,12 +48,12 @@ fun SignUpScreen(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .background(Color.Red)
             .fillMaxSize()
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .padding(start = 16.dp, top = 100.dp, bottom = 40.dp)
                 .fillMaxWidth()
         ) {
@@ -63,19 +63,19 @@ fun SignUpScreen(navController: NavController) {
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = modifier.height(20.dp))
             Text(
                 text = "Welcome to Marvel App.", fontWeight = FontWeight.Bold, color = Color.White
             )
         }
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                 .background(MaterialTheme.colorScheme.background)
         ) {
             ConstraintLayout(
-                modifier = Modifier
+                modifier = modifier
                     .padding(horizontal = 24.dp, vertical = 40.dp)
                     .fillMaxSize()
             ) {
@@ -90,12 +90,12 @@ fun SignUpScreen(navController: NavController) {
                     leadingIcon = {
                         Icon(Icons.Default.Person, contentDescription = null)
                     },
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .constrainAs(nameField) {
                             top.linkTo(parent.top)
                         })
-                Spacer(modifier = Modifier
+                Spacer(modifier = modifier
                     .height(16.dp)
                     .constrainAs(createRef()) {
                         top.linkTo(nameField.bottom)
@@ -109,12 +109,12 @@ fun SignUpScreen(navController: NavController) {
                     leadingIcon = {
                         Icon(Icons.Default.Email, contentDescription = null)
                     },
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .constrainAs(emailField) {
                             top.linkTo(nameField.bottom, margin = 16.dp)
                         })
-                Spacer(modifier = Modifier
+                Spacer(modifier = modifier
                     .height(16.dp)
                     .constrainAs(createRef()) {
                         top.linkTo(emailField.bottom)
@@ -126,12 +126,12 @@ fun SignUpScreen(navController: NavController) {
                         focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
                     ),
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .constrainAs(passwordField) {
                             top.linkTo(emailField.bottom, margin = 16.dp)
                         })
-                Spacer(modifier = Modifier
+                Spacer(modifier = modifier
                     .height(16.dp)
                     .constrainAs(createRef()) {
                         top.linkTo(passwordField.bottom)
@@ -143,12 +143,12 @@ fun SignUpScreen(navController: NavController) {
                         focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
                     ),
                     leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .constrainAs(confirmPasswordField) {
                             top.linkTo(passwordField.bottom, margin = 16.dp)
                         })
-                Spacer(modifier = Modifier
+                Spacer(modifier = modifier
                     .height(32.dp)
                     .constrainAs(createRef()) {
                         top.linkTo(confirmPasswordField.bottom)
@@ -162,14 +162,14 @@ fun SignUpScreen(navController: NavController) {
                 },
                     text = "Sign Up",
                     isLoading = isLoading.value,
-                    modifier = Modifier
+                    modifier = modifier
                         .height(50.dp)
                         .fillMaxWidth()
                         .constrainAs(signUpButton) {
                             top.linkTo(confirmPasswordField.bottom, margin = 32.dp)
                         })
                 Text(text = "Already have an account? Sign in",
-                    modifier = Modifier
+                    modifier = modifier
                         .constrainAs(loginText) {
                             top.linkTo(signUpButton.bottom, margin = 16.dp)
                             start.linkTo(parent.start)
@@ -185,7 +185,7 @@ fun SignUpScreen(navController: NavController) {
                 Text(text = "© Marvel 2024",
                     fontSize = 16.sp,
                     color = Color.Gray,
-                    modifier = Modifier.constrainAs(marvelText) {
+                    modifier = modifier.constrainAs(marvelText) {
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)

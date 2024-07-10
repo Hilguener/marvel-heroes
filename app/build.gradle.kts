@@ -25,9 +25,7 @@ android {
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "MARVEL_API_KEY", properties.getProperty("MARVEL_API_KEY"))
         buildConfigField(
-            "String",
-            "MARVEL_PRIVATE_KEY",
-            properties.getProperty("MARVEL_PRIVATE_KEY")
+            "String", "MARVEL_PRIVATE_KEY", properties.getProperty("MARVEL_PRIVATE_KEY")
         )
 
 
@@ -35,10 +33,10 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -75,16 +73,20 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
     //Koin
-    implementation (libs.koin.android)
+    implementation(libs.koin.android)
     //Glide
     implementation(libs.compose)
+    //Navigation Compose
     implementation(libs.androidx.navigation.compose)
+
+    //ConstraintLayout Compose
+    implementation(libs.constraintlayout.compose)
+
 
 
     testImplementation(libs.junit)
