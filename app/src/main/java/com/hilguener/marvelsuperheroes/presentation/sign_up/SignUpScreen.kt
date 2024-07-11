@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import com.hilguener.marvelsuperheroes.presentation.sign_in.LoadingButton
+import com.hilguener.marvelsuperheroes.presentation.components.EmailTextField
+import com.hilguener.marvelsuperheroes.presentation.components.LoadingButton
+import com.hilguener.marvelsuperheroes.presentation.components.PasswordTextField
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -43,7 +44,9 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+    val passwordVisible = remember { mutableStateOf(false) }
     val confirmPassword = remember { mutableStateOf("") }
+    val confirmPasswordVisible = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -65,7 +68,9 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
             )
             Spacer(modifier = modifier.height(20.dp))
             Text(
-                text = "Welcome to Marvel App.", fontWeight = FontWeight.Bold, color = Color.White
+                text = "Welcome to Marvel App.",
+                fontWeight = FontWeight.Bold,
+                color = Color.White
             )
         }
         Box(
@@ -81,7 +86,8 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
             ) {
                 val (nameField, emailField, passwordField, confirmPasswordField, signUpButton, loginText, marvelText) = createRefs()
 
-                OutlinedTextField(value = name.value,
+                OutlinedTextField(
+                    value = name.value,
                     onValueChange = { name.value = it },
                     label = { Text("Name") },
                     colors = OutlinedTextFieldDefaults.colors(
@@ -94,72 +100,47 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .constrainAs(nameField) {
                             top.linkTo(parent.top)
-                        })
-                Spacer(modifier = modifier
-                    .height(16.dp)
-                    .constrainAs(createRef()) {
-                        top.linkTo(nameField.bottom)
-                    })
-                OutlinedTextField(value = email.value,
-                    onValueChange = { email.value = it },
-                    label = { Text("Email") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
-                    ),
-                    leadingIcon = {
-                        Icon(Icons.Default.Email, contentDescription = null)
-                    },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .constrainAs(emailField) {
-                            top.linkTo(nameField.bottom, margin = 16.dp)
-                        })
-                Spacer(modifier = modifier
-                    .height(16.dp)
-                    .constrainAs(createRef()) {
-                        top.linkTo(emailField.bottom)
-                    })
-                OutlinedTextField(value = password.value,
-                    onValueChange = { password.value = it },
-                    label = { Text("Password") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
-                    ),
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .constrainAs(passwordField) {
-                            top.linkTo(emailField.bottom, margin = 16.dp)
-                        })
-                Spacer(modifier = modifier
-                    .height(16.dp)
-                    .constrainAs(createRef()) {
-                        top.linkTo(passwordField.bottom)
-                    })
-                OutlinedTextField(value = confirmPassword.value,
-                    onValueChange = { confirmPassword.value = it },
-                    label = { Text("Confirm Password") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
-                    ),
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .constrainAs(confirmPasswordField) {
-                            top.linkTo(passwordField.bottom, margin = 16.dp)
-                        })
-                Spacer(modifier = modifier
-                    .height(32.dp)
-                    .constrainAs(createRef()) {
-                        top.linkTo(confirmPasswordField.bottom)
-                    })
-                LoadingButton(onClick = {
-                    coroutineScope.launch {
-                        isLoading.value = true
-                        delay(2000)
-                        isLoading.value = false
+                        }
+                )
+                Spacer(modifier = modifier.height(16.dp))
+                EmailTextField(
+                    email = email.value,
+                    onEmailChange = { email.value = it },
+                    modifier = Modifier.constrainAs(emailField) {
+                        top.linkTo(nameField.bottom, margin = 16.dp)
                     }
-                },
+                )
+                Spacer(modifier = modifier.height(16.dp))
+                PasswordTextField(
+                    password = password.value,
+                    onPasswordChange = { password.value = it },
+                    passwordVisible = passwordVisible.value,
+                    label = "Password",
+                    onPasswordVisibilityChange = { passwordVisible.value = !passwordVisible.value },
+                    modifier = Modifier.constrainAs(passwordField) {
+                        top.linkTo(emailField.bottom, margin = 16.dp)
+                    }
+                )
+                Spacer(modifier = modifier.height(16.dp))
+                PasswordTextField(
+                    password = confirmPassword.value,
+                    onPasswordChange = { confirmPassword.value = it },
+                    passwordVisible = confirmPasswordVisible.value,
+                    label = "Confirm Password",
+                    onPasswordVisibilityChange = { confirmPasswordVisible.value = !confirmPasswordVisible.value },
+                    modifier = Modifier.constrainAs(confirmPasswordField) {
+                        top.linkTo(passwordField.bottom, margin = 16.dp)
+                    }
+                )
+                Spacer(modifier = modifier.height(32.dp))
+                LoadingButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            isLoading.value = true
+                            delay(2000)
+                            isLoading.value = false
+                        }
+                    },
                     text = "Sign Up",
                     isLoading = isLoading.value,
                     modifier = modifier
@@ -167,8 +148,10 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .constrainAs(signUpButton) {
                             top.linkTo(confirmPasswordField.bottom, margin = 32.dp)
-                        })
-                Text(text = "Already have an account? Sign in",
+                        }
+                )
+                Text(
+                    text = "Already have an account? Sign in",
                     modifier = modifier
                         .constrainAs(loginText) {
                             top.linkTo(signUpButton.bottom, margin = 16.dp)
@@ -181,19 +164,23 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
                                     inclusive = true
                                 }
                             }
-                        })
-                Text(text = "© Marvel 2024",
+                        }
+                )
+                Text(
+                    text = "© Marvel 2024",
                     fontSize = 16.sp,
                     color = Color.Gray,
                     modifier = modifier.constrainAs(marvelText) {
                         bottom.linkTo(parent.bottom, margin = 16.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    })
+                    }
+                )
             }
         }
     }
 }
+
 
 
 @Preview(showBackground = false)

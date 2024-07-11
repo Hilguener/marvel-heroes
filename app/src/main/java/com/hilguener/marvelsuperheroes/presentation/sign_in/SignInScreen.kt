@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,15 +39,24 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import com.hilguener.marvelsuperheroes.R
+import com.hilguener.marvelsuperheroes.presentation.components.LoadingButton
+import com.hilguener.marvelsuperheroes.presentation.components.PasswordTextField
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun SignInScreen(navController: NavController, modifier: Modifier = Modifier) {
-    val email = remember { mutableStateOf("") }
+fun SignInScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    state: SignInState
+) {
     val password = remember { mutableStateOf("") }
+    val passwordVisible = remember { mutableStateOf(false) }
+
+    val email = remember { mutableStateOf("") }
     val isLoading = remember { mutableStateOf(false) }
+
     val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = modifier
@@ -68,7 +76,7 @@ fun SignInScreen(navController: NavController, modifier: Modifier = Modifier) {
             )
             Spacer(modifier = modifier.height(20.dp))
             Text(
-                text = "Welcome to marvel app.", fontWeight = FontWeight.Bold, color = Color.White
+                text = "Welcome to Marvel app.", fontWeight = FontWeight.Bold, color = Color.White
             )
         }
         Box(
@@ -105,24 +113,24 @@ fun SignInScreen(navController: NavController, modifier: Modifier = Modifier) {
                     .constrainAs(createRef()) {
                         top.linkTo(emailField.bottom)
                     })
-                OutlinedTextField(value = password.value,
-                    onValueChange = { password.value = it },
-                    label = { Text("Password") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
-                    ),
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                    modifier = modifier
-                        .fillMaxWidth()
+                PasswordTextField(
+                    password = password.value,
+                    onPasswordChange = { password.value = it },
+                    label = "Password",
+                    passwordVisible = passwordVisible.value,
+                    onPasswordVisibilityChange = { passwordVisible.value = !passwordVisible.value },
+                    modifier = Modifier
                         .constrainAs(passwordField) {
                             top.linkTo(emailField.bottom, margin = 16.dp)
-                        })
+                        }
+                )
                 Spacer(modifier = modifier
                     .height(8.dp)
                     .constrainAs(createRef()) {
                         top.linkTo(passwordField.bottom)
                     })
-                Text(text = "Forgot password?",
+                Text(
+                    text = "Forgot password?",
                     modifier = modifier.constrainAs(forgotPasswordText) {
                         top.linkTo(passwordField.bottom, margin = 8.dp)
                         end.linkTo(parent.end)
@@ -175,19 +183,20 @@ fun SignInScreen(navController: NavController, modifier: Modifier = Modifier) {
                     }
 
                 }
-                ElevatedCard(onClick = {
-                    navController.navigate("sign_up_screen") {
-                        popUpTo("sign_in_screen") {
-                            inclusive = true
+                ElevatedCard(
+                    onClick = {
+                        navController.navigate("sign_up_screen") {
+                            popUpTo("sign_in_screen") {
+                                inclusive = true
+                            }
                         }
-                    }
-                }, modifier = modifier
-                    .fillMaxWidth()
-                    .constrainAs(createAccountButton) {
-                        bottom.linkTo(marvelText.top, margin = 16.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }, shape = RoundedCornerShape(10.dp)
+                    }, modifier = modifier
+                        .fillMaxWidth()
+                        .constrainAs(createAccountButton) {
+                            bottom.linkTo(marvelText.top, margin = 16.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }, shape = RoundedCornerShape(10.dp)
                 ) {
                     Row(
                         modifier = modifier.padding(16.dp),
@@ -217,5 +226,6 @@ fun SignInScreen(navController: NavController, modifier: Modifier = Modifier) {
 fun SignInScreenPreview() {
     val context = LocalContext.current
     val navController = NavController(context)
-    SignInScreen(navController)
+    val state = SignInState()
+    SignInScreen(navController, state = state)
 }
