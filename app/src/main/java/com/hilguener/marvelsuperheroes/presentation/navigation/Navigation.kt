@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.hilguener.marvelsuperheroes.presentation.home.MainScreen
 import com.hilguener.marvelsuperheroes.presentation.sign_in.SignInScreen
+import com.hilguener.marvelsuperheroes.presentation.sign_in.SignInState
 import com.hilguener.marvelsuperheroes.presentation.sign_up.SignUpScreen
 import com.hilguener.marvelsuperheroes.presentation.splash.SplashScreen
 
@@ -17,7 +18,8 @@ fun Navigation() {
             SplashScreen(navController = navController)
         }
         composable("sign_in_screen") {
-            SignInScreen(navController = navController)
+            val state = SignInState()
+            SignInScreen(navController = navController, state = state)
         }
         composable("sign_up_screen") {
             SignUpScreen(navController = navController)

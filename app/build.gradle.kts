@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -73,21 +74,28 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    //Firebase bom
+    implementation(platform(libs.firebase.bom))
+
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+
     //Koin
     implementation(libs.koin.android)
+
     //Glide
     implementation(libs.compose)
+
     //Navigation Compose
     implementation(libs.androidx.navigation.compose)
 
     //ConstraintLayout Compose
     implementation(libs.constraintlayout.compose)
 
-
+    //Material Icons Extended
+    implementation(libs.androidx.material.icons.extended)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
