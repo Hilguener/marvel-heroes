@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 fun SignUpScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    state: SignInState,
+    state: SignUpState,
 ) {
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -213,7 +213,7 @@ fun SignUpScreenPreview() {
     MarvelSuperHeroesTheme {
         val context = LocalContext.current
         val navController = NavController(context)
-        val state = SignInState()
+        val state = SignUpState()
         SignUpScreen(navController, state = state)
     }
 }
@@ -224,7 +224,7 @@ fun SignUpScreenDarkPreview() {
     MarvelSuperHeroesTheme(darkTheme = true) {
         val context = LocalContext.current
         val navController = NavController(context)
-        val state = SignInState()
+        val state = SignUpState()
         SignUpScreen(navController, state = state)
     }
 }
