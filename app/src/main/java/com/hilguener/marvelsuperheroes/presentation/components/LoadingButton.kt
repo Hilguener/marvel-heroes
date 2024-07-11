@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation.sign_in
+package com.hilguener.marvelsuperheroes.presentation.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,7 +20,7 @@ fun LoadingButton(
     onClick: () -> Unit,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
-    shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(10.dp)
+    shape: Shape = RoundedCornerShape(10.dp)
 ) {
     Button(
         onClick = onClick,
