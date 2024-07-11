@@ -1,6 +1,5 @@
 package com.hilguener.marvelsuperheroes.data.util
 
-import android.os.Build
 import com.hilguener.marvelsuperheroes.BuildConfig
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -13,6 +12,7 @@ class Constants {
         const val API_KEY = BuildConfig.MARVEL_API_KEY
         private const val PRIVATE_KEY = BuildConfig.MARVEL_PRIVATE_KEY
         const val LIMIT = 20
+
         fun hash(): String {
             val input = "$timestamp$PRIVATE_KEY$API_KEY"
             val md = MessageDigest.getInstance("MD5")

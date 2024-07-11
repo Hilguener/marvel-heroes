@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class ComicItem(
     @SerializedName("resourceURI") val resourceURI: String,
-    @SerializedName("name") val name: String
+    @SerializedName("name") val name: String,
 )

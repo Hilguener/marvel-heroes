@@ -15,31 +15,32 @@ val Poppins =
         Font(R.font.poppins_medium, FontWeight.Normal),
         Font(R.font.poppins_bold, FontWeight.Bold),
     )
-val Typography = Typography(
-    bodyLarge =
-    TextStyle(
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
-    ),
-    displayLarge =
-    TextStyle(
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Bold,
-        fontSize = 40.sp,
-    ),
-    displayMedium =
-    TextStyle(
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
-    ),
-    displaySmall =
-    TextStyle(
-        fontFamily = Poppins,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-    ),
-)
+val Typography =
+    Typography(
+        bodyLarge =
+            TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                letterSpacing = 0.5.sp,
+            ),
+        displayLarge =
+            TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Bold,
+                fontSize = 40.sp,
+            ),
+        displayMedium =
+            TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Normal,
+                fontSize = 20.sp,
+            ),
+        displaySmall =
+            TextStyle(
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+            ),
+    )

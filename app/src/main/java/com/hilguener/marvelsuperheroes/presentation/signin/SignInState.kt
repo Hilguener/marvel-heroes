@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation.sign_in
+package com.hilguener.marvelsuperheroes.presentation.signin
 
 data class SignInState(
     val isLoading: Boolean = false,

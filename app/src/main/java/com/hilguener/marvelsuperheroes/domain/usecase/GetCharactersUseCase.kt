@@ -17,7 +17,3 @@ class GetCharactersUseCase(private val httpRepository: HttpRepository) {
         return characterList
     }
 }
-
-
-
-

@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation.sign_up
+package com.hilguener.marvelsuperheroes.presentation.signup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,15 +31,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
+import com.example.compose.MarvelSuperHeroesTheme
 import com.hilguener.marvelsuperheroes.presentation.components.EmailTextField
 import com.hilguener.marvelsuperheroes.presentation.components.LoadingButton
 import com.hilguener.marvelsuperheroes.presentation.components.PasswordTextField
+import com.hilguener.marvelsuperheroes.presentation.signin.SignInState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 @Composable
-fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
+fun SignUpScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    state: SignInState,
+) {
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
@@ -51,38 +55,42 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
     val coroutineScope = rememberCoroutineScope()
 
     Column(
-        modifier = modifier
-            .background(Color.Red)
-            .fillMaxSize()
+        modifier =
+            modifier
+                .background(Color.Red)
+                .fillMaxSize(),
     ) {
         Column(
-            modifier = modifier
-                .padding(start = 16.dp, top = 100.dp, bottom = 40.dp)
-                .fillMaxWidth()
+            modifier =
+                modifier
+                    .padding(start = 16.dp, top = 100.dp, bottom = 40.dp)
+                    .fillMaxWidth(),
         ) {
             Text(
                 text = "Sign Up",
                 color = Color.White,
                 fontSize = 30.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = modifier.height(20.dp))
             Text(
                 text = "Welcome to Marvel App.",
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = Color.White,
             )
         }
         Box(
-            modifier = modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                .background(MaterialTheme.colorScheme.background)
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    .background(MaterialTheme.colorScheme.background),
         ) {
             ConstraintLayout(
-                modifier = modifier
-                    .padding(horizontal = 24.dp, vertical = 40.dp)
-                    .fillMaxSize()
+                modifier =
+                    modifier
+                        .padding(horizontal = 24.dp, vertical = 40.dp)
+                        .fillMaxSize(),
             ) {
                 val (nameField, emailField, passwordField, confirmPasswordField, signUpButton, loginText, marvelText) = createRefs()
 
@@ -90,25 +98,29 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
                     value = name.value,
                     onValueChange = { name.value = it },
                     label = { Text("Name") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray
-                    ),
+                    colors =
+                        OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Red,
+                            unfocusedBorderColor = Color.Gray,
+                        ),
                     leadingIcon = {
                         Icon(Icons.Default.Person, contentDescription = null)
                     },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .constrainAs(nameField) {
-                            top.linkTo(parent.top)
-                        }
+                    modifier =
+                        modifier
+                            .fillMaxWidth()
+                            .constrainAs(nameField) {
+                                top.linkTo(parent.top)
+                            },
                 )
                 Spacer(modifier = modifier.height(16.dp))
                 EmailTextField(
                     email = email.value,
                     onEmailChange = { email.value = it },
-                    modifier = Modifier.constrainAs(emailField) {
-                        top.linkTo(nameField.bottom, margin = 16.dp)
-                    }
+                    modifier =
+                        Modifier.constrainAs(emailField) {
+                            top.linkTo(nameField.bottom, margin = 16.dp)
+                        },
                 )
                 Spacer(modifier = modifier.height(16.dp))
                 PasswordTextField(
@@ -117,9 +129,10 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
                     passwordVisible = passwordVisible.value,
                     label = "Password",
                     onPasswordVisibilityChange = { passwordVisible.value = !passwordVisible.value },
-                    modifier = Modifier.constrainAs(passwordField) {
-                        top.linkTo(emailField.bottom, margin = 16.dp)
-                    }
+                    modifier =
+                        Modifier.constrainAs(passwordField) {
+                            top.linkTo(emailField.bottom, margin = 16.dp)
+                        },
                 )
                 Spacer(modifier = modifier.height(16.dp))
                 PasswordTextField(
@@ -128,9 +141,10 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
                     passwordVisible = confirmPasswordVisible.value,
                     label = "Confirm Password",
                     onPasswordVisibilityChange = { confirmPasswordVisible.value = !confirmPasswordVisible.value },
-                    modifier = Modifier.constrainAs(confirmPasswordField) {
-                        top.linkTo(passwordField.bottom, margin = 16.dp)
-                    }
+                    modifier =
+                        Modifier.constrainAs(confirmPasswordField) {
+                            top.linkTo(passwordField.bottom, margin = 16.dp)
+                        },
                 )
                 Spacer(modifier = modifier.height(32.dp))
                 LoadingButton(
@@ -143,50 +157,65 @@ fun SignUpScreen(navController: NavController, modifier: Modifier = Modifier) {
                     },
                     text = "Sign Up",
                     isLoading = isLoading.value,
-                    modifier = modifier
-                        .height(50.dp)
-                        .fillMaxWidth()
-                        .constrainAs(signUpButton) {
-                            top.linkTo(confirmPasswordField.bottom, margin = 32.dp)
-                        }
+                    modifier =
+                        modifier
+                            .height(50.dp)
+                            .fillMaxWidth()
+                            .constrainAs(signUpButton) {
+                                top.linkTo(confirmPasswordField.bottom, margin = 32.dp)
+                            },
                 )
                 Text(
                     text = "Already have an account? Sign in",
-                    modifier = modifier
-                        .constrainAs(loginText) {
-                            top.linkTo(signUpButton.bottom, margin = 16.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                        .clickable {
-                            navController.navigate("sign_in_screen") {
-                                popUpTo("sign_up_screen") {
-                                    inclusive = true
-                                }
+                    modifier =
+                        modifier
+                            .constrainAs(loginText) {
+                                top.linkTo(signUpButton.bottom, margin = 16.dp)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
                             }
-                        }
+                            .clickable {
+                                navController.navigate("sign_in_screen") {
+                                    popUpTo("sign_up_screen") {
+                                        inclusive = true
+                                    }
+                                }
+                            },
                 )
                 Text(
                     text = "© Marvel 2024",
                     fontSize = 16.sp,
                     color = Color.Gray,
-                    modifier = modifier.constrainAs(marvelText) {
-                        bottom.linkTo(parent.bottom, margin = 16.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
+                    modifier =
+                        modifier.constrainAs(marvelText) {
+                            bottom.linkTo(parent.bottom, margin = 16.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
                 )
             }
         }
     }
 }
 
-
+@Preview(showBackground = false)
+@Composable
+fun SignUpScreenPreview() {
+    MarvelSuperHeroesTheme {
+        val context = LocalContext.current
+        val navController = NavController(context)
+        val state = SignInState()
+        SignUpScreen(navController, state = state)
+    }
+}
 
 @Preview(showBackground = false)
 @Composable
-fun SignInScreenPreview() {
-    val context = LocalContext.current
-    val navController = NavController(context)
-    SignUpScreen(navController)
+fun SignUpScreenDarkPreview() {
+    MarvelSuperHeroesTheme(darkTheme = true) {
+        val context = LocalContext.current
+        val navController = NavController(context)
+        val state = SignInState()
+        SignUpScreen(navController, state = state)
+    }
 }

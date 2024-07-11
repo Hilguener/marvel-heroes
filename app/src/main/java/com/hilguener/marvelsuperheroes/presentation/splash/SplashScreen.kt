@@ -1,6 +1,5 @@
 package com.hilguener.marvelsuperheroes.presentation.splash
 
-
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -22,16 +21,18 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
-    val scale = remember {
-        Animatable(0f)
-    }
+    val scale =
+        remember {
+            Animatable(0f)
+        }
     LaunchedEffect(key1 = true) {
         scale.animateTo(
             targetValue = 0.8f,
-            animationSpec = spring(
-                dampingRatio = Spring.DampingRatioLowBouncy,
-                stiffness = Spring.StiffnessLow
-            )
+            animationSpec =
+                spring(
+                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    stiffness = Spring.StiffnessLow,
+                ),
         )
         delay(3000L)
         navController.navigate("sign_in_screen") {
@@ -44,7 +45,7 @@ fun SplashScreen(navController: NavController) {
         Image(
             painter = painterResource(id = R.drawable.marvel_logo),
             contentDescription = "Logo",
-            modifier = Modifier.scale(scale.value)
+            modifier = Modifier.scale(scale.value),
         )
     }
 }

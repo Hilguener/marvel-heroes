@@ -19,17 +19,18 @@ fun EmailTextField(
     label: String = "Email",
     focusedBorderColor: Color = Color.Red,
     unfocusedBorderColor: Color = Color.Gray,
-    leadingIcon: @Composable (() -> Unit) = { Icon(Icons.Default.Email, contentDescription = null) }
+    leadingIcon: @Composable (() -> Unit) = { Icon(Icons.Default.Email, contentDescription = null) },
 ) {
     OutlinedTextField(
         value = email,
         onValueChange = onEmailChange,
         label = { Text(label) },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = focusedBorderColor,
-            unfocusedBorderColor = unfocusedBorderColor
-        ),
+        colors =
+            OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = focusedBorderColor,
+                unfocusedBorderColor = unfocusedBorderColor,
+            ),
         leadingIcon = leadingIcon,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     )
 }

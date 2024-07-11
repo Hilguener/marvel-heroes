@@ -13,5 +13,5 @@ data class Character(
     @SerializedName("series") val series: Series,
     @SerializedName("stories") val stories: Stories,
     @SerializedName("events") val events: Events,
-    @SerializedName("urls") val urls: List<Url>
+    @SerializedName("urls") val urls: List<Url>,
 )

@@ -9,4 +9,3 @@ class HttpRepositoryImpl(private val marvelApi: MarvelApi) : HttpRepository {
         return marvelApi.getCharacters()
     }
 }
-

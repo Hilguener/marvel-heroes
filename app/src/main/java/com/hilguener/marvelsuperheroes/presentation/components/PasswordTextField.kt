@@ -23,7 +23,7 @@ fun PasswordTextField(
     label: String,
     focusedBorderColor: Color = Color.Red,
     unfocusedBorderColor: Color = Color.Gray,
-    leadingIcon: @Composable (() -> Unit) = { Icon(Icons.Default.Lock, contentDescription = null) }
+    leadingIcon: @Composable (() -> Unit) = { Icon(Icons.Default.Lock, contentDescription = null) },
 ) {
     OutlinedTextField(
         value = password,
@@ -36,12 +36,14 @@ fun PasswordTextField(
                 onTogglePasswordVisibility = onPasswordVisibilityChange,
             )
         },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = focusedBorderColor,
-            unfocusedBorderColor = unfocusedBorderColor
-        ),
+        colors =
+            OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = focusedBorderColor,
+                unfocusedBorderColor = unfocusedBorderColor,
+            ),
         leadingIcon = leadingIcon,
-        modifier = modifier
-            .fillMaxWidth()
+        modifier =
+            modifier
+                .fillMaxWidth(),
     )
 }

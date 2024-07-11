@@ -26,10 +26,10 @@ android {
         properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "MARVEL_API_KEY", properties.getProperty("MARVEL_API_KEY"))
         buildConfigField(
-            "String", "MARVEL_PRIVATE_KEY", properties.getProperty("MARVEL_PRIVATE_KEY")
+            "String",
+            "MARVEL_PRIVATE_KEY",
+            properties.getProperty("MARVEL_PRIVATE_KEY"),
         )
-
-
     }
 
     buildTypes {
@@ -37,9 +37,21 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
             )
         }
+    }
+    ktlint {
+        version.set("1.1.0")
+        debug.set(true)
+        enableExperimentalRules.set(true)
+        additionalEditorconfig.set(
+            mapOf(
+                "max_line_length" to "off",
+                "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
+            ),
+        )
     }
 
     compileOptions {
@@ -74,27 +86,27 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    //Firebase bom
+    // Firebase bom
     implementation(platform(libs.firebase.bom))
 
-    //Retrofit
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
-    //Koin
+    // Koin
     implementation(libs.koin.android)
 
-    //Glide
+    // Glide
     implementation(libs.compose)
 
-    //Navigation Compose
+    // Navigation Compose
     implementation(libs.androidx.navigation.compose)
 
-    //ConstraintLayout Compose
+    // ConstraintLayout Compose
     implementation(libs.constraintlayout.compose)
 
-    //Material Icons Extended
+    // Material Icons Extended
     implementation(libs.androidx.material.icons.extended)
 
     testImplementation(libs.junit)

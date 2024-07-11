@@ -11,9 +11,7 @@ import androidx.compose.ui.Modifier
 import com.example.compose.MarvelSuperHeroesTheme
 import com.hilguener.marvelsuperheroes.presentation.navigation.Navigation
 
-
 class MainActivity : ComponentActivity() {
-
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

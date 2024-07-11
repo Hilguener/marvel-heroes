@@ -20,13 +20,13 @@ fun LoadingButton(
     onClick: () -> Unit,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(10.dp)
+    shape: Shape = RoundedCornerShape(10.dp),
 ) {
     Button(
         onClick = onClick,
         modifier = modifier,
         shape = shape,
-        colors = ButtonDefaults.buttonColors(Color.Red)
+        colors = ButtonDefaults.buttonColors(Color.Red),
     ) {
         if (isLoading) {
             CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
@@ -35,7 +35,7 @@ fun LoadingButton(
                 text = text,
                 fontSize = 20.sp,
                 color = Color.White,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
     }

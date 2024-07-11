@@ -6,5 +6,5 @@ data class Stories(
     @SerializedName("available") val available: Int,
     @SerializedName("collectionURI") val collectionURI: String,
     @SerializedName("items") val items: List<StoryItem>,
-    @SerializedName("returned") val returned: Int
+    @SerializedName("returned") val returned: Int,
 )
