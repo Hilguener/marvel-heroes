@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
@@ -26,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,15 +58,15 @@ fun SignUpScreen(
 
     Column(
         modifier =
-            modifier
-                .background(Color.Red)
-                .fillMaxSize(),
+        modifier
+            .background(Color.Red)
+            .fillMaxSize(),
     ) {
         Column(
             modifier =
-                modifier
-                    .padding(start = 16.dp, top = 100.dp, bottom = 40.dp)
-                    .fillMaxWidth(),
+            modifier
+                .padding(start = 16.dp, top = 100.dp, bottom = 40.dp)
+                .fillMaxWidth(),
         ) {
             Text(
                 text = "Sign Up",
@@ -81,16 +83,16 @@ fun SignUpScreen(
         }
         Box(
             modifier =
-                modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                    .background(MaterialTheme.colorScheme.background),
+            modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                .background(MaterialTheme.colorScheme.background),
         ) {
             ConstraintLayout(
                 modifier =
-                    modifier
-                        .padding(horizontal = 24.dp, vertical = 40.dp)
-                        .fillMaxSize(),
+                modifier
+                    .padding(horizontal = 24.dp, vertical = 40.dp)
+                    .fillMaxSize(),
             ) {
                 val (nameField, emailField, passwordField, confirmPasswordField, signUpButton, loginText, marvelText) = createRefs()
 
@@ -99,28 +101,30 @@ fun SignUpScreen(
                     onValueChange = { name.value = it },
                     label = { Text("Name") },
                     colors =
-                        OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.Red,
-                            unfocusedBorderColor = Color.Gray,
-                        ),
+                    OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Red,
+                        unfocusedBorderColor = Color.Gray,
+                    ),
+                    singleLine = true,
                     leadingIcon = {
                         Icon(Icons.Default.Person, contentDescription = null)
                     },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     modifier =
-                        modifier
-                            .fillMaxWidth()
-                            .constrainAs(nameField) {
-                                top.linkTo(parent.top)
-                            },
+                    modifier
+                        .fillMaxWidth()
+                        .constrainAs(nameField) {
+                            top.linkTo(parent.top)
+                        },
                 )
                 Spacer(modifier = modifier.height(16.dp))
                 EmailTextField(
                     email = email.value,
                     onEmailChange = { email.value = it },
                     modifier =
-                        Modifier.constrainAs(emailField) {
-                            top.linkTo(nameField.bottom, margin = 16.dp)
-                        },
+                    Modifier.constrainAs(emailField) {
+                        top.linkTo(nameField.bottom, margin = 16.dp)
+                    },
                 )
                 Spacer(modifier = modifier.height(16.dp))
                 PasswordTextField(
@@ -130,9 +134,11 @@ fun SignUpScreen(
                     label = "Password",
                     onPasswordVisibilityChange = { passwordVisible.value = !passwordVisible.value },
                     modifier =
-                        Modifier.constrainAs(passwordField) {
-                            top.linkTo(emailField.bottom, margin = 16.dp)
-                        },
+                    Modifier.constrainAs(passwordField) {
+                        top.linkTo(emailField.bottom, margin = 16.dp)
+                    },
+                    imeAction = ImeAction.Next
+
                 )
                 Spacer(modifier = modifier.height(16.dp))
                 PasswordTextField(
@@ -140,11 +146,14 @@ fun SignUpScreen(
                     onPasswordChange = { confirmPassword.value = it },
                     passwordVisible = confirmPasswordVisible.value,
                     label = "Confirm Password",
-                    onPasswordVisibilityChange = { confirmPasswordVisible.value = !confirmPasswordVisible.value },
+                    onPasswordVisibilityChange = {
+                        confirmPasswordVisible.value = !confirmPasswordVisible.value
+                    },
                     modifier =
-                        Modifier.constrainAs(confirmPasswordField) {
-                            top.linkTo(passwordField.bottom, margin = 16.dp)
-                        },
+                    Modifier.constrainAs(confirmPasswordField) {
+                        top.linkTo(passwordField.bottom, margin = 16.dp)
+                    },
+                    imeAction = ImeAction.Done
                 )
                 Spacer(modifier = modifier.height(32.dp))
                 LoadingButton(
@@ -158,40 +167,40 @@ fun SignUpScreen(
                     text = "Sign Up",
                     isLoading = isLoading.value,
                     modifier =
-                        modifier
-                            .height(50.dp)
-                            .fillMaxWidth()
-                            .constrainAs(signUpButton) {
-                                top.linkTo(confirmPasswordField.bottom, margin = 32.dp)
-                            },
+                    modifier
+                        .height(50.dp)
+                        .fillMaxWidth()
+                        .constrainAs(signUpButton) {
+                            top.linkTo(confirmPasswordField.bottom, margin = 32.dp)
+                        },
                 )
                 Text(
                     text = "Already have an account? Sign in",
                     modifier =
-                        modifier
-                            .constrainAs(loginText) {
-                                top.linkTo(signUpButton.bottom, margin = 16.dp)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                            .clickable {
-                                navController.navigate("sign_in_screen") {
-                                    popUpTo("sign_up_screen") {
-                                        inclusive = true
-                                    }
+                    modifier
+                        .constrainAs(loginText) {
+                            top.linkTo(signUpButton.bottom, margin = 16.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                        .clickable {
+                            navController.navigate("sign_in_screen") {
+                                popUpTo("sign_up_screen") {
+                                    inclusive = true
                                 }
-                            },
+                            }
+                        },
                 )
                 Text(
                     text = "© Marvel 2024",
                     fontSize = 16.sp,
                     color = Color.Gray,
                     modifier =
-                        modifier.constrainAs(marvelText) {
-                            bottom.linkTo(parent.bottom, margin = 16.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
+                    modifier.constrainAs(marvelText) {
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
                 )
             }
         }

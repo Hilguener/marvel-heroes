@@ -1,6 +1,7 @@
 package com.hilguener.marvelsuperheroes.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
@@ -10,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun EmailTextField(
@@ -19,17 +22,27 @@ fun EmailTextField(
     label: String = "Email",
     focusedBorderColor: Color = Color.Red,
     unfocusedBorderColor: Color = Color.Gray,
-    leadingIcon: @Composable (() -> Unit) = { Icon(Icons.Default.Email, contentDescription = null) },
+    leadingIcon: @Composable (() -> Unit) = {
+        Icon(
+            Icons.Default.Email,
+            contentDescription = null
+        )
+    },
 ) {
     OutlinedTextField(
         value = email,
         onValueChange = onEmailChange,
         label = { Text(label) },
         colors =
-            OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = focusedBorderColor,
-                unfocusedBorderColor = unfocusedBorderColor,
-            ),
+        OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = focusedBorderColor,
+            unfocusedBorderColor = unfocusedBorderColor,
+        ),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next
+        ),
         leadingIcon = leadingIcon,
         modifier = modifier.fillMaxWidth(),
     )

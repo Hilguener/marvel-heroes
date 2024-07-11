@@ -1,6 +1,7 @@
 package com.hilguener.marvelsuperheroes.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
@@ -10,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 
@@ -24,6 +27,7 @@ fun PasswordTextField(
     focusedBorderColor: Color = Color.Red,
     unfocusedBorderColor: Color = Color.Gray,
     leadingIcon: @Composable (() -> Unit) = { Icon(Icons.Default.Lock, contentDescription = null) },
+    imeAction: ImeAction
 ) {
     OutlinedTextField(
         value = password,
@@ -36,14 +40,19 @@ fun PasswordTextField(
                 onTogglePasswordVisibility = onPasswordVisibilityChange,
             )
         },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = imeAction
+        ),
+        singleLine = true,
         colors =
-            OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = focusedBorderColor,
-                unfocusedBorderColor = unfocusedBorderColor,
-            ),
+        OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = focusedBorderColor,
+            unfocusedBorderColor = unfocusedBorderColor,
+        ),
         leadingIcon = leadingIcon,
         modifier =
-            modifier
-                .fillMaxWidth(),
+        modifier
+            .fillMaxWidth(),
     )
 }
