@@ -9,4 +9,5 @@ data class FormState(
     val passwordError: String? = null,
     val confirmPassword: String = "",
     val confirmPasswordError: String? = null,
+    val authError: String? = null,
 )
