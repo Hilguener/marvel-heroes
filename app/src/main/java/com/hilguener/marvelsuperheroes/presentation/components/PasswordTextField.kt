@@ -27,7 +27,8 @@ fun PasswordTextField(
     focusedBorderColor: Color = Color.Red,
     unfocusedBorderColor: Color = Color.Gray,
     leadingIcon: @Composable (() -> Unit) = { Icon(Icons.Default.Lock, contentDescription = null) },
-    imeAction: ImeAction
+    imeAction: ImeAction,
+    isError: Boolean = false,
 ) {
     OutlinedTextField(
         value = password,
@@ -45,6 +46,7 @@ fun PasswordTextField(
             imeAction = imeAction
         ),
         singleLine = true,
+        isError = isError,
         colors =
         OutlinedTextFieldDefaults.colors(
             focusedBorderColor = focusedBorderColor,

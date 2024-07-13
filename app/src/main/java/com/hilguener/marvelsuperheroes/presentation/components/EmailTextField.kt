@@ -22,6 +22,7 @@ fun EmailTextField(
     label: String = "Email",
     focusedBorderColor: Color = Color.Red,
     unfocusedBorderColor: Color = Color.Gray,
+    isError: Boolean = false,
     leadingIcon: @Composable (() -> Unit) = {
         Icon(
             Icons.Default.Email,
@@ -45,5 +46,6 @@ fun EmailTextField(
         ),
         leadingIcon = leadingIcon,
         modifier = modifier.fillMaxWidth(),
+        isError = isError
     )
 }
