@@ -95,7 +95,7 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     // Koin
-    implementation(libs.koin.android)
+    implementation (libs.koin.androidx.compose)
 
     // Glide
     implementation(libs.compose)
@@ -108,6 +108,7 @@ dependencies {
 
     // Material Icons Extended
     implementation(libs.androidx.material.icons.extended)
+
     implementation(libs.firebase.auth)
 
     testImplementation(libs.junit)
