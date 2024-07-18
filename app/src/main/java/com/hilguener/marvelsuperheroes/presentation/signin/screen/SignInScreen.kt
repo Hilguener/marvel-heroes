@@ -1,29 +1,28 @@
-package com.hilguener.marvelsuperheroes.presentation.signup
+package com.hilguener.marvelsuperheroes.presentation.signin.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,45 +34,46 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.compose.MarvelSuperHeroesTheme
 import com.hilguener.marvelsuperheroes.presentation.components.EmailTextField
 import com.hilguener.marvelsuperheroes.presentation.components.LoadingButton
 import com.hilguener.marvelsuperheroes.presentation.components.PasswordTextField
-import com.hilguener.marvelsuperheroes.presentation.signup.viewmodel.SignUpViewModel
+import com.hilguener.marvelsuperheroes.presentation.signin.event.SignInFormEvent
+import com.hilguener.marvelsuperheroes.presentation.signin.vm.SignInViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-
 @Composable
-fun SignUpScreen(
+internal fun SignInScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
 ) {
-    val viewModel: SignUpViewModel = koinViewModel()
+
+    val viewModel: SignInViewModel = koinViewModel()
     val state = viewModel.state
     val context = LocalContext.current
     val passwordVisible = remember { mutableStateOf(false) }
-    val confirmPasswordVisible = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(context) {
         viewModel.validationEvent.collect { event ->
             when (event) {
-                is SignUpViewModel.ValidationEvent.Success -> {
+                is SignInViewModel.ValidationEvent.Success -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-                    navController.navigate("main_screen"){
-                        popUpTo("sign_up_screen") {
+                    navController.navigate("main_screen") {
+                        popUpTo("sign_in_screen") {
                             inclusive = true
                         }
                     }
                 }
-                is SignUpViewModel.ValidationEvent.Error -> {
+
+                is SignInViewModel.ValidationEvent.Error -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
+
 
     Column(
         modifier = modifier
@@ -86,14 +86,14 @@ fun SignUpScreen(
                 .fillMaxWidth(),
         ) {
             Text(
-                text = "Sign Up",
+                text = "Sign In",
                 color = Color.White,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "Welcome to Marvel App.",
+                text = "Welcome to Marvel app.",
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
             )
@@ -109,48 +109,17 @@ fun SignUpScreen(
                     .padding(horizontal = 24.dp, vertical = 40.dp)
                     .fillMaxSize(),
             ) {
-                val (nameField, nameError, emailField, emailError, passwordField, passwordError, confirmPasswordField, confirmPasswordError, signUpButton, loginText, marvelText) = createRefs()
+                val (emailField, emailError, passwordField, passwordError, forgotPasswordText, signInButton, googleButton, createAccountButton, marvelText) = createRefs()
 
-                OutlinedTextField(
-                    value = state.name,
-                    onValueChange = { viewModel.onEvent(SignUpFormEvent.NameChanged(it)) },
-                    isError = state.nameError != null,
-                    label = { Text("Name") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Red,
-                        unfocusedBorderColor = Color.Gray,
-                    ),
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(Icons.Default.Person, contentDescription = null)
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .constrainAs(nameField) {
-                            top.linkTo(parent.top)
-                        },
-                )
-                if (state.nameError != null) {
-                    Text(
-                        text = state.nameError,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.constrainAs(nameError) {
-                            top.linkTo(nameField.bottom, margin = 4.dp)
-                        }
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
                 EmailTextField(
                     email = state.email,
-                    onEmailChange = { viewModel.onEvent(SignUpFormEvent.EmailChanged(it)) },
-                    modifier = Modifier.constrainAs(emailField) {
-                        top.linkTo(
-                            if (state.nameError != null) nameError.bottom else nameField.bottom,
-                            margin = 16.dp
-                        )
-                    },
-                    isError = viewModel.state.emailError != null,
+                    onEmailChange = { viewModel.onEvent(SignInFormEvent.EmailChanged(it)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(emailField) {
+                            top.linkTo(parent.top)
+                        },
+                    isError = state.emailError != null
                 )
                 if (state.emailError != null) {
                     Text(
@@ -164,9 +133,9 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 PasswordTextField(
                     password = state.password,
-                    onPasswordChange = { viewModel.onEvent(SignUpFormEvent.PasswordChanged(it)) },
-                    passwordVisible = passwordVisible.value,
+                    onPasswordChange = { viewModel.onEvent(SignInFormEvent.PasswordChanged(it)) },
                     label = "Password",
+                    passwordVisible = passwordVisible.value,
                     onPasswordVisibilityChange = { passwordVisible.value = !passwordVisible.value },
                     modifier = Modifier.constrainAs(passwordField) {
                         top.linkTo(
@@ -174,8 +143,8 @@ fun SignUpScreen(
                             margin = 16.dp
                         )
                     },
-                    imeAction = ImeAction.Next,
-                    isError = state.passwordError != null,
+                    imeAction = ImeAction.Done,
+                    isError = state.passwordError != null
                 )
                 if (state.passwordError != null) {
                     Text(
@@ -186,68 +155,57 @@ fun SignUpScreen(
                         }
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                PasswordTextField(
-                    password = state.confirmPassword,
-                    onPasswordChange = { viewModel.onEvent(SignUpFormEvent.ConfirmPasswordChanged(it)) },
-                    passwordVisible = confirmPasswordVisible.value,
-                    label = "Confirm Password",
-                    onPasswordVisibilityChange = {
-                        confirmPasswordVisible.value = !confirmPasswordVisible.value
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Forgot password?",
+                    modifier = Modifier.constrainAs(forgotPasswordText) {
+                        top.linkTo(passwordField.bottom, margin = 8.dp)
+                        end.linkTo(parent.end)
                     },
-                    modifier = Modifier.constrainAs(confirmPasswordField) {
-                        top.linkTo(
-                            if (state.passwordError != null) passwordError.bottom else passwordField.bottom,
-                            margin = 16.dp
-                        )
-                    },
-                    imeAction = ImeAction.Done,
-                    isError = state.confirmPasswordError != null
                 )
-                if (state.confirmPasswordError != null) {
-                    Text(
-                        text = state.confirmPasswordError,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.constrainAs(confirmPasswordError) {
-                            top.linkTo(confirmPasswordField.bottom, margin = 4.dp)
-                        }
-                    )
-                }
                 Spacer(modifier = Modifier.height(32.dp))
                 LoadingButton(
                     onClick = {
                         coroutineScope.launch {
-                            viewModel.onEvent(SignUpFormEvent.Submit)
+                            viewModel.onEvent(SignInFormEvent.Submit)
                         }
                     },
-                    text = "Sign Up",
                     isLoading = viewModel.isLoading,
+                    text = "Sign In",
                     modifier = Modifier
                         .height(50.dp)
                         .fillMaxWidth()
-                        .constrainAs(signUpButton) {
-                            top.linkTo(
-                                if (state.confirmPasswordError != null) confirmPasswordError.bottom else confirmPasswordField.bottom,
-                                margin = 32.dp
-                            )
-                        },
-                )
-                Text(
-                    text = "Already have an account? Sign in",
-                    modifier = Modifier
-                        .constrainAs(loginText) {
-                            top.linkTo(signUpButton.bottom, margin = 16.dp)
+                        .constrainAs(signInButton) {
+                            top.linkTo(forgotPasswordText.bottom, margin = 32.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                        }
-                        .clickable {
-                            navController.navigate("sign_in_screen") {
-                                popUpTo("sign_up_screen") {
-                                    inclusive = true
-                                }
-                            }
                         },
                 )
+                ElevatedCard(
+                    onClick = {
+                        navController.navigate("sign_up_screen") {
+                            popUpTo("sign_in_screen") {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(createAccountButton) {
+                            bottom.linkTo(marvelText.top, margin = 16.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    shape = RoundedCornerShape(10.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(text = "Create a new account", modifier = Modifier.weight(1f))
+                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "")
+                    }
+                }
                 Text(
                     text = "© Marvel 2024",
                     fontSize = 16.sp,
@@ -264,23 +222,22 @@ fun SignUpScreen(
 }
 
 
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSignUpScreen() {
-    MarvelSuperHeroesTheme {
-        val fakeNavController = rememberNavController()
-        SignUpScreen(navController = fakeNavController)
-    }
-
-}
-
 @Preview(showBackground = false)
 @Composable
-fun SignUpScreenDarkPreview() {
+fun SignInScreenPreview() {
+    MarvelSuperHeroesTheme {
+        val context = LocalContext.current
+        val navController = NavController(context)
+        SignInScreen(navController)
+    }
+}
+
+@Preview
+@Composable
+fun SignInScreenDarkPreview() {
     MarvelSuperHeroesTheme(darkTheme = true) {
-        val fakeNavController = rememberNavController()
-        SignUpScreen(navController = fakeNavController)
+        val context = LocalContext.current
+        val navController = NavController(context)
+        SignInScreen(navController)
     }
 }

@@ -1,6 +1,6 @@
 package com.hilguener.marvelsuperheroes.domain.use_case.validation
 
-data class FormState(
+data class SignState(
     val name: String = "",
     val nameError: String? = null,
     val email: String = "",

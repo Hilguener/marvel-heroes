@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation.signin
+package com.hilguener.marvelsuperheroes.presentation.signin.event
 
 sealed class SignInFormEvent{
     data class EmailChanged(val email: String) : SignInFormEvent()

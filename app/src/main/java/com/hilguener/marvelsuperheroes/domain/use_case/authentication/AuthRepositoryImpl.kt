@@ -2,6 +2,7 @@ package com.hilguener.marvelsuperheroes.domain.use_case.authentication
 
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.hilguener.marvelsuperheroes.domain.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -31,5 +32,8 @@ class AuthRepositoryImpl(private val firebaseAuth: FirebaseAuth) : AuthRepositor
             emit(Resource.Error(e.message ?: "Sign up failed"))
         }
     }
+
+
 }
+
 

@@ -5,8 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.hilguener.marvelsuperheroes.presentation.home.MainScreen
-import com.hilguener.marvelsuperheroes.presentation.signin.SignInScreen
-import com.hilguener.marvelsuperheroes.presentation.signup.SignUpScreen
+import com.hilguener.marvelsuperheroes.presentation.signin.screen.SignInScreen
+import com.hilguener.marvelsuperheroes.presentation.signup.screen.SignUpScreen
 import com.hilguener.marvelsuperheroes.presentation.splash.SplashScreen
 
 @Composable

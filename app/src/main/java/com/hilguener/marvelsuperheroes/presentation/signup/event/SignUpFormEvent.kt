@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation.signup
+package com.hilguener.marvelsuperheroes.presentation.signup.event
 
 sealed class SignUpFormEvent{
     data class NameChanged(val name: String) : SignUpFormEvent()

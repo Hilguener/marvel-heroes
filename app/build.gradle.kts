@@ -110,6 +110,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

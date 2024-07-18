@@ -12,7 +12,20 @@
           "package_name": "com.hilguener.marvelsuperheroes"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1007950010041-hfl8b9goq29jteceprum06nd26g889k7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hilguener.marvelsuperheroes",
+            "certificate_hash": "5c4e1aa95e314d9328796a2628a2a68fd6ee598e"
+          }
+        },
+        {
+          "client_id": "1007950010041-g82ei9cesa0tklht267al1n66bq1rtbu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC9QGoXiG2OkzzpQ9ZinLVLL1at8CTz69M"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007950010041-g82ei9cesa0tklht267al1n66bq1rtbu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
