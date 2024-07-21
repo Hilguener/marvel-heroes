@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.hilguener.marvelsuperheroes.presentation.FavoriteScreen
+import com.hilguener.marvelsuperheroes.presentation.characters.CharactersScreen
 import com.hilguener.marvelsuperheroes.presentation.home.MainScreen
 import com.hilguener.marvelsuperheroes.presentation.signin.screen.SignInScreen
 import com.hilguener.marvelsuperheroes.presentation.signup.screen.SignUpScreen
@@ -24,6 +26,12 @@ fun Navigation() {
         }
         composable("main_screen") {
             MainScreen()
+        }
+        composable("characters_screen") {
+            CharactersScreen()
+        }
+        composable("favorites_screen") {
+            FavoriteScreen()
         }
     }
 }
