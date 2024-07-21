@@ -2,8 +2,10 @@ package com.hilguener.marvelsuperheroes.data.http
 
 import com.hilguener.marvelsuperheroes.data.util.Constants
 import com.hilguener.marvelsuperheroes.domain.model.character.MarvelResponse
+import com.hilguener.marvelsuperheroes.domain.model.comic.ComicsResponse
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MarvelApi {
@@ -12,7 +14,17 @@ interface MarvelApi {
         @Query("apikey") apikey: String = Constants.API_KEY,
         @Query("ts") ts: String = Constants.timestamp,
         @Query("hash") hash: String = Constants.hash(),
-        @Query("offset") offset: Int = 0,
+        @Query("offset") offset: Int = 100,
         @Query("limit") limit: Int = Constants.LIMIT,
     ): Response<MarvelResponse>
+
+    @GET("/v1/public/characters/{characterId}/comics")
+    suspend fun getComics(
+        @Path("characterId") characterId: Int,
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timestamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("offset") offset: Int = 0,
+        @Query("limit") limit: Int = Constants.LIMIT,
+    ): Response<ComicsResponse>
 }
