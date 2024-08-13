@@ -2,17 +2,14 @@ package com.hilguener.marvelsuperheroes.presentation.home
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalDrawerSheet
@@ -23,20 +20,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.hilguener.marvelsuperheroes.presentation.FavoriteScreen
+import com.hilguener.marvelsuperheroes.presentation.favorites.FavoriteScreen
 import com.hilguener.marvelsuperheroes.presentation.characters.CharactersScreen
+import com.hilguener.marvelsuperheroes.presentation.comics.ComicsScreen
 import com.hilguener.marvelsuperheroes.presentation.navigation.AppBar
 import com.hilguener.marvelsuperheroes.presentation.navigation.DrawerBody
 import com.hilguener.marvelsuperheroes.presentation.navigation.DrawerHeader
 import com.hilguener.marvelsuperheroes.presentation.navigation.NavDrawerItem
+import com.hilguener.marvelsuperheroes.presentation.series.SeriesScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MyApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -45,9 +46,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val currentRoute = currentBackStackEntry?.destination?.route
 
     val appBarTitle = when (currentRoute) {
-        "main_screen" -> "Home"
+        "my_app" -> "Home"
         "characters_screen" -> "Characters"
         "favorites_screen" -> "Favorites"
+        "comics_screen" -> "Comics"
+        "events_screen" -> "Events"
+        "stories_screen" -> "Stories"
+        "creators_screen" -> "Creators"
+        "series_screen" -> "Series"
         else -> ""
     }
 
@@ -95,30 +101,37 @@ fun MainScreen(modifier: Modifier = Modifier) {
                             icon = Icons.Default.Favorite
                         ),
                         NavDrawerItem(
-                            id = "logout",
-                            title = "Logout",
-                            icon = Icons.AutoMirrored.Filled.ExitToApp
-                        ),
+                            id = "series",
+                            title = "Series",
+                            icon = Icons.Default.Tv
+                        )
                     ),
                     onItemClick = { item ->
                         when (item.id) {
                             "home" -> {
-                                navController.navigate("main_screen") {
-                                    popUpTo("main_screen") { inclusive = true }
+                                navController.navigate("my_app") {
+                                    popUpTo("my_app") { inclusive = true }
                                 }
                             }
                             "favorites" -> {
                                 navController.navigate("favorites_screen") {
-                                    popUpTo("main_screen") { inclusive = true }
+                                    popUpTo("my_app") { inclusive = true }
                                 }
                             }
                             "characters" -> {
                                 navController.navigate("characters_screen") {
-                                    popUpTo("main_screen") { inclusive = true }
+                                    popUpTo("my_app") { inclusive = true }
                                 }
                             }
-                            "logout" -> {
-
+                            "comics" -> {
+                                navController.navigate("comics_screen") {
+                                    popUpTo("my_app") { inclusive = true }
+                                }
+                            }
+                            "series" -> {
+                                navController.navigate("series_screen") {
+                                    popUpTo("my_app") { inclusive = true }
+                                }
                             }
                         }
                         scope.launch {
@@ -129,8 +142,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 HorizontalDivider()
             }
         }
-    )
-{
+    ) {
         Scaffold(
             topBar = {
                 AppBar(
@@ -145,11 +157,11 @@ fun MainScreen(modifier: Modifier = Modifier) {
         ) { contentPadding ->
             NavHost(
                 navController = navController,
-                startDestination = "main_screen",
-                Modifier.padding(contentPadding)
+                startDestination = "my_app",
+                modifier.padding(contentPadding)
             ) {
-                composable("main_screen") {
-                    // MainScreenContent()
+                composable("my_app") {
+                    MainScreenContent()
                 }
                 composable("characters_screen") {
                     CharactersScreen()
@@ -157,9 +169,21 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 composable("favorites_screen") {
                     FavoriteScreen()
                 }
+                composable("comics_screen") {
+                    ComicsScreen()
+                }
+                composable("series_screen") {
+                    SeriesScreen()
+                }
             }
         }
     }
+}
+
+
+@Composable
+fun MainScreenContent() {
+
 }
 
 

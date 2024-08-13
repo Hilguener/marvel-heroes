@@ -88,8 +88,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    // Firebase bom
-    implementation(platform(libs.firebase.bom))
 
     // Retrofit
     implementation(libs.retrofit)
@@ -114,13 +112,12 @@ dependencies {
     //Room
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
-    ksp("androidx.room:room-compiler:2.6.1")
+    ksp(libs.androidx.room.compiler)
 
+    //Paging
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation (libs.androidx.paging.compose)
 
-
-    implementation(libs.firebase.auth)
-    implementation(libs.play.services.auth)
-    implementation(libs.firebase.firestore)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

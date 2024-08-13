@@ -20,7 +20,7 @@ import com.hilguener.marvelsuperheroes.R
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(onNavigateToMyApp: () -> Unit) {
     val scale =
         remember {
             Animatable(0f)
@@ -35,11 +35,7 @@ fun SplashScreen(navController: NavController) {
                 ),
         )
         delay(3000L)
-        navController.navigate("sign_in_screen") {
-            popUpTo("splash_screen") {
-                inclusive = true
-            }
-        }
+        onNavigateToMyApp()
     }
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         Image(
@@ -53,7 +49,5 @@ fun SplashScreen(navController: NavController) {
 @Preview
 @Composable
 fun SplashScreenPreview() {
-    val context = LocalContext.current
-    val navController = NavController(context)
-    SplashScreen(navController = navController)
+    SplashScreen(onNavigateToMyApp = {})
 }
