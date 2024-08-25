@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation.favorites
+package com.hilguener.marvelsuperheroes.presentation.screen.favorites
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -24,9 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.hilguener.marvelsuperheroes.domain.model.character.Character
-import com.hilguener.marvelsuperheroes.presentation.characters.CharacterDetailContent
-import com.hilguener.marvelsuperheroes.presentation.characters.CharacterItem
-import com.hilguener.marvelsuperheroes.presentation.characters.vm.CharactersViewModel
+import com.hilguener.marvelsuperheroes.presentation.screen.characters.CharacterDetailContent
+import com.hilguener.marvelsuperheroes.presentation.screen.characters.CharacterItem
+import com.hilguener.marvelsuperheroes.presentation.screen.characters.vm.CharactersViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 

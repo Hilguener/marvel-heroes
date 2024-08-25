@@ -1,6 +1,11 @@
-package com.hilguener.marvelsuperheroes.presentation.characters
+package com.hilguener.marvelsuperheroes.presentation.screen.characters
 
 import android.widget.Toast
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -64,7 +71,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.hilguener.marvelsuperheroes.domain.model.character.Character
 import com.hilguener.marvelsuperheroes.domain.model.comic.Comic
-import com.hilguener.marvelsuperheroes.presentation.characters.vm.CharactersViewModel
+import com.hilguener.marvelsuperheroes.presentation.screen.characters.vm.CharactersViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -83,6 +90,8 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
     val searchQuery = rememberSaveable { mutableStateOf("") }
     val characters = viewModel.charactersPager.collectAsLazyPagingItems()
     val localFocusManager = LocalFocusManager.current
+    var clickedItemId by rememberSaveable { mutableStateOf<Int?>(null) }
+
     LaunchedEffect(context) {
         viewModel.events.collect { event ->
             when (event) {
@@ -121,14 +130,14 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
     }
 
     Scaffold(modifier = modifier) { paddingValues ->
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = modifier.fillMaxSize()) {
             OutlinedTextField(
                 value = searchQuery.value,
                 onValueChange = { query ->
                     searchQuery.value = query
                 },
                 label = { Text("Search characters...") },
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 leadingIcon = {
@@ -145,10 +154,10 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
                     }
                 )
             )
-            Box(modifier = Modifier.weight(1f)) {
+            Box(modifier = modifier.weight(1f)) {
                 if (characters.loadState.refresh is LoadState.Loading) {
                     Box(
-                        modifier = Modifier
+                        modifier = modifier
                             .fillMaxSize()
                             .padding(paddingValues),
                         contentAlignment = Alignment.Center
@@ -157,7 +166,7 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
                     }
                 } else if (characters.itemCount == 0 && searchQuery.value.isNotBlank()) {
                     Box(
-                        modifier = Modifier
+                        modifier = modifier
                             .fillMaxSize()
                             .padding(paddingValues),
                         contentAlignment = Alignment.Center
@@ -176,21 +185,35 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
                             items(characters.itemCount) { index ->
                                 val character = characters[index]
                                 character?.let {
-                                    CharacterItem(character = it, modifier = Modifier.clickable {
-                                        isSheetOpen = true
-                                        selectedCharacter.value = it
-                                        coroutineScope.launch {
-                                            viewModel.getCharactersComicsById(it.id)
-                                            bottomSheetState.show()
-                                        }
-                                    })
+                                    val isClicked = clickedItemId == it.id
+                                    val alpha by animateFloatAsState(
+                                        targetValue = if (isClicked) 0.5f else 1f,
+                                        animationSpec = tween(
+                                            durationMillis = 300,
+                                            easing = LinearEasing
+                                        )
+                                    )
+                                    CharacterItem(
+                                        character = it,
+                                        modifier = modifier
+                                            .clickable {
+                                                clickedItemId = it.id
+                                                isSheetOpen = true
+                                                selectedCharacter.value = it
+                                                coroutineScope.launch {
+                                                    viewModel.getCharactersComicsById(it.id)
+                                                    bottomSheetState.show()
+                                                }
+                                            }
+                                            .graphicsLayer(alpha = alpha)
+                                    )
                                 }
                             }
 
                             if (characters.loadState.append is LoadState.Loading) {
                                 item(span = { GridItemSpan(maxLineSpan) }) {
                                     Box(
-                                        modifier = Modifier
+                                        modifier = modifier
                                             .fillMaxWidth()
                                             .padding(vertical = 16.dp),
                                         contentAlignment = Alignment.Center
@@ -210,6 +233,8 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
         }
     }
 }
+
+
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -246,29 +271,30 @@ fun CharacterDetailContent(
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
     comics: List<Comic>,
-    isLoadingComics: Boolean
+    isLoadingComics: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .size(240.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
             GlideImage(
-                model = "${character.thumbnail.path}.${character.thumbnail.extension}",
+                model = "${character.thumbnail.path}/portrait_uncanny.${character.thumbnail.extension}",
                 contentDescription = character.name,
-                modifier = Modifier
+                modifier = modifier
                     .size(240.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
             IconButton(
                 onClick = onFavoriteClick,
-                modifier = Modifier
+                modifier = modifier
                     .align(Alignment.BottomEnd)
                     .offset(x = (-8).dp, y = (-8).dp)
             ) {
@@ -276,19 +302,19 @@ fun CharacterDetailContent(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                     contentDescription = if (isFavorite) "Unfavorite" else "Favorite",
                     tint = if (isFavorite) Color.Red else Color.Gray,
-                    modifier = Modifier.size(36.dp)
+                    modifier = modifier.size(36.dp)
                 )
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = modifier.height(8.dp))
         Text(
             text = character.name,
             style = MaterialTheme.typography.displaySmall,
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = modifier.height(8.dp))
         Text(
             text = "Description",
             style = MaterialTheme.typography.displaySmall,
@@ -298,7 +324,7 @@ fun CharacterDetailContent(
             text = character.description.takeIf { it.isNotBlank() } ?: "No description available.",
             textAlign = TextAlign.Justify,
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = modifier.height(16.dp))
         Text(
             text = "Comics",
             style = MaterialTheme.typography.displaySmall,
@@ -306,11 +332,11 @@ fun CharacterDetailContent(
         )
         if (isLoadingComics) {
             CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = modifier.align(Alignment.CenterHorizontally)
             )
         } else {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
+            LazyVerticalGrid( columns = GridCells.Fixed(2),
+                modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(comics) { comic ->
@@ -318,7 +344,7 @@ fun CharacterDetailContent(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = modifier.height(16.dp))
     }
 }
 
@@ -327,7 +353,6 @@ fun CharacterDetailContent(
 fun ComicItem(comic: Comic, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .width(120.dp)
             .padding(8.dp)
             .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
     ) {
@@ -335,9 +360,8 @@ fun ComicItem(comic: Comic, modifier: Modifier = Modifier) {
             model = "${comic.thumbnail.path}.${comic.thumbnail.extension}",
             contentDescription = comic.title,
             modifier = modifier
-                .height(180.dp)
-                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
-            contentScale = ContentScale.Crop
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.None
         )
         Spacer(modifier = modifier.height(8.dp))
         Text(

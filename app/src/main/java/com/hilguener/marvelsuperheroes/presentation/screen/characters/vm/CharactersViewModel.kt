@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation.characters.vm
+package com.hilguener.marvelsuperheroes.presentation.screen.characters.vm
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
