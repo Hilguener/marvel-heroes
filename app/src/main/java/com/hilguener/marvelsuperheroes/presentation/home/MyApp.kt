@@ -26,14 +26,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.hilguener.marvelsuperheroes.presentation.favorites.FavoriteScreen
-import com.hilguener.marvelsuperheroes.presentation.characters.CharactersScreen
-import com.hilguener.marvelsuperheroes.presentation.comics.ComicsScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.favorites.FavoriteScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.characters.CharactersScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.comics.ComicsScreen
 import com.hilguener.marvelsuperheroes.presentation.navigation.AppBar
 import com.hilguener.marvelsuperheroes.presentation.navigation.DrawerBody
 import com.hilguener.marvelsuperheroes.presentation.navigation.DrawerHeader
 import com.hilguener.marvelsuperheroes.presentation.navigation.NavDrawerItem
-import com.hilguener.marvelsuperheroes.presentation.series.SeriesScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.creators.CreatorsScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.events.EventsScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.series.SeriesScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.stories.StoriesScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -96,14 +99,14 @@ fun MyApp(modifier: Modifier = Modifier) {
                             icon = Icons.Default.Edit
                         ),
                         NavDrawerItem(
-                            id = "favorites",
-                            title = "Favorites",
-                            icon = Icons.Default.Favorite
-                        ),
-                        NavDrawerItem(
                             id = "series",
                             title = "Series",
                             icon = Icons.Default.Tv
+                        ),
+                        NavDrawerItem(
+                            id = "favorites",
+                            title = "Favorites",
+                            icon = Icons.Default.Favorite
                         )
                     ),
                     onItemClick = { item ->
@@ -130,6 +133,21 @@ fun MyApp(modifier: Modifier = Modifier) {
                             }
                             "series" -> {
                                 navController.navigate("series_screen") {
+                                    popUpTo("my_app") { inclusive = true }
+                                }
+                            }
+                            "events" -> {
+                                navController.navigate("events_screen") {
+                                    popUpTo("my_app") { inclusive = true }
+                                }
+                            }
+                            "creators" -> {
+                                navController.navigate("creators_screen") {
+                                    popUpTo("my_app") { inclusive = true }
+                                }
+                            }
+                            "stories" -> {
+                                navController.navigate("stories_screen") {
                                     popUpTo("my_app") { inclusive = true }
                                 }
                             }
@@ -174,6 +192,15 @@ fun MyApp(modifier: Modifier = Modifier) {
                 }
                 composable("series_screen") {
                     SeriesScreen()
+                }
+                composable("events_screen") {
+                    EventsScreen()
+                }
+                composable("stories_screen") {
+                    StoriesScreen()
+                }
+                composable("creators_screen") {
+                   CreatorsScreen()
                 }
             }
         }

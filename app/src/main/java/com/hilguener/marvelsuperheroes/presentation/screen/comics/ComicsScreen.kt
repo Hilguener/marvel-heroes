@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation.comics
+package com.hilguener.marvelsuperheroes.presentation.screen.comics
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -53,8 +54,10 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.hilguener.marvelsuperheroes.domain.model.character.Character
 import com.hilguener.marvelsuperheroes.domain.model.comic.Comic
-import com.hilguener.marvelsuperheroes.presentation.comics.vm.ComicsViewModel
+import com.hilguener.marvelsuperheroes.presentation.screen.characters.CharacterItem
+import com.hilguener.marvelsuperheroes.presentation.screen.comics.vm.ComicsViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -62,6 +65,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun ComicsScreen(modifier: Modifier = Modifier) {
     val viewModel: ComicsViewModel = koinViewModel()
+    val state = viewModel.state
+
     val context = LocalContext.current
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -94,7 +99,9 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
         ) {
             selectedComic.value?.let { comic ->
                 ComicDetailContent(
-                    comic = comic
+                    comic = comic,
+                    characters = state.characters,
+                    isLoadingCharacters = state.isLoading
                 )
             }
         }
@@ -163,6 +170,7 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
                                             isSheetOpen = true
                                             selectedComic.value = it
                                             coroutineScope.launch {
+                                                viewModel.getCharactersComicById(it.id)
                                                 bottomSheetState.show()
                                             }
                                         })
@@ -198,23 +206,24 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ComicDetailContent(
-    comic: Comic,
+    comic: Comic?,
+    isLoadingCharacters: Boolean,
+    characters: List<Character>,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(16.dp)
     ) {
         item {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 GlideImage(
-                    model = "${comic.thumbnail.path}/portrait_fantastic.${comic.thumbnail.extension}",
-                    contentDescription = comic.title,
+                    model = "${comic?.thumbnail?.path}/portrait_fantastic.${comic?.thumbnail?.extension}",
+                    contentDescription = comic?.title,
                     modifier = Modifier
                         .width(200.dp)
                         .height(260.dp)
@@ -222,32 +231,37 @@ fun ComicDetailContent(
                     contentScale = ContentScale.Fit
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Text(
-                        text = comic.title,
-                        style = MaterialTheme.typography.displaySmall,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+
+                Text(
+                    text = comic?.title ?: "No title found",
+                    style = MaterialTheme.typography.displaySmall,
+                    fontSize = 24.sp,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         item {
             Text(
                 text = "Description",
                 style = MaterialTheme.typography.displaySmall,
+                fontSize = 20.sp,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = comic?.description.takeIf { it!!.isNotBlank() }
+                    ?: "No description available.",
+                textAlign = TextAlign.Justify,
+                style = MaterialTheme.typography.bodyMedium,
                 fontSize = 17.sp,
             )
-        }
-        item {
-            Text(
-                text = comic.description.takeIf { it.isNotBlank() } ?: "No description available.",
-                textAlign = TextAlign.Justify,
-            )
-        }
 
-        item { Spacer(modifier = Modifier.height(16.dp)) }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         item {
             Row {
@@ -257,13 +271,13 @@ fun ComicDetailContent(
                     fontSize = 17.sp,
                 )
                 Text(
-                    text = "${comic.pageCount}",
+                    text = "${comic?.pageCount}",
                     fontSize = 17.sp,
                 )
             }
-        }
 
-        item { Spacer(modifier = Modifier.height(16.dp)) }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         item {
             Row {
@@ -273,13 +287,13 @@ fun ComicDetailContent(
                     fontSize = 17.sp,
                 )
                 Text(
-                    text = comic.isbn.takeIf { it.isNotBlank() } ?: "Unknown",
+                    text = comic?.isbn.takeIf { it!!.isNotBlank() } ?: "Unknown",
                     fontSize = 17.sp,
                 )
             }
-        }
 
-        item { Spacer(modifier = Modifier.height(16.dp)) }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         item {
             Row {
@@ -289,9 +303,49 @@ fun ComicDetailContent(
                     fontSize = 17.sp,
                 )
                 Text(
-                    text = comic.format.takeIf { it.isNotBlank() } ?: "Unknown",
+                    text = comic?.format.takeIf { it!!.isNotBlank() } ?: "Unknown",
                     fontSize = 17.sp,
                 )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Text(
+                text = "Characters",
+                style = MaterialTheme.typography.displaySmall,
+                fontSize = 20.sp,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        when {
+            isLoadingCharacters -> {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+
+            characters.isEmpty() -> {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "No characters found",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 17.sp
+                        )
+                    }
+                }
+            }
+
+            else -> {
+                items(characters) { character ->
+                    CharacterItem(character)
+                }
             }
         }
     }
