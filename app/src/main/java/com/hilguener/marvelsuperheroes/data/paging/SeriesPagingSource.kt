@@ -7,13 +7,13 @@ import com.hilguener.marvelsuperheroes.data.util.Constants
 import com.hilguener.marvelsuperheroes.domain.model.series.Series
 
 class SeriesPagingSource(
-    private val characterRepository: HttpRepository,
+    private val seriesRepository: HttpRepository,
     private val name: String? = null
 ) : PagingSource<Int, Series>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Series> {
         return try {
             val nextPageNumber = params.key ?: 1
-            val response = characterRepository.getSeries(nextPageNumber, name)
+            val response = seriesRepository.getSeries(nextPageNumber, name)
             val characters = response.body()?.data?.results ?: emptyList()
             val totalCount = response.body()?.data?.total ?: 0
             val nextKey =

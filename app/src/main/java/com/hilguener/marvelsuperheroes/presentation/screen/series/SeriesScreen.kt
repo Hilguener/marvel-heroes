@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.presentation.series
+package com.hilguener.marvelsuperheroes.presentation.screen.series
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -51,7 +51,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.hilguener.marvelsuperheroes.domain.model.series.Series
-import com.hilguener.marvelsuperheroes.presentation.series.vm.SeriesViewModel
+import com.hilguener.marvelsuperheroes.presentation.screen.series.vm.SeriesViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
