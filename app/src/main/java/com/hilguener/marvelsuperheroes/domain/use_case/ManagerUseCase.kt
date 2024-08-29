@@ -17,7 +17,11 @@ data class ManagerUseCase(
     val getStoriesUseCase: GetStoriesUseCase,
     val getCreatorsUseCase: GetCreatorsUseCase,
     val getCreatorComicsById: GetCreatorComicsById,
-    val getCharactersComicById: GetCharactersComicByIdUseCase
+    val getCharactersComicById: GetCharactersComicByIdUseCase,
+    val getCharactersCarrousel: GetCharactersCarrouselUseCase,
+    val getComicsCarrousel: GetComicsCarrouselUseCase,
+    val getSeriesCarrousel: GetSeriesCarrouselUseCase,
+    val getEventsCarrousel: GetEventsCarrouselUseCase,
 ) {
     fun getCharactersPagingSource(query: String? = null): PagingSource<Int, Character> {
         return getCharactersUseCase.getPagingSource(query)

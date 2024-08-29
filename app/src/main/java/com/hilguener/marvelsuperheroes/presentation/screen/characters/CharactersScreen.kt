@@ -1,21 +1,14 @@
 package com.hilguener.marvelsuperheroes.presentation.screen.characters
 
 import android.widget.Toast
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,20 +17,18 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -55,8 +46,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -114,14 +103,6 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
             selectedCharacter.value?.let { character ->
                 CharacterDetailContent(
                     character = character,
-                    isFavorite = viewModel.isFavorite(character),
-                    onFavoriteClick = {
-                        if (viewModel.isFavorite(character)) {
-                            viewModel.removeFavorite(character)
-                        } else {
-                            viewModel.addFavorite(character)
-                        }
-                    },
                     comics = state.comics,
                     isLoadingComics = state.isLoadingComics
                 )
@@ -185,14 +166,6 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
                             items(characters.itemCount) { index ->
                                 val character = characters[index]
                                 character?.let {
-                                    val isClicked = clickedItemId == it.id
-                                    val alpha by animateFloatAsState(
-                                        targetValue = if (isClicked) 0.5f else 1f,
-                                        animationSpec = tween(
-                                            durationMillis = 300,
-                                            easing = LinearEasing
-                                        )
-                                    )
                                     CharacterItem(
                                         character = it,
                                         modifier = modifier
@@ -205,7 +178,7 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
                                                     bottomSheetState.show()
                                                 }
                                             }
-                                            .graphicsLayer(alpha = alpha)
+
                                     )
                                 }
                             }
@@ -233,8 +206,6 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
         }
     }
 }
-
-
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -268,8 +239,6 @@ fun CharacterItem(character: Character, modifier: Modifier = Modifier) {
 @Composable
 fun CharacterDetailContent(
     character: Character,
-    isFavorite: Boolean,
-    onFavoriteClick: () -> Unit,
     comics: List<Comic>,
     isLoadingComics: Boolean,
     modifier: Modifier = Modifier
@@ -277,6 +246,7 @@ fun CharacterDetailContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
         Box(
@@ -292,19 +262,6 @@ fun CharacterDetailContent(
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
-            IconButton(
-                onClick = onFavoriteClick,
-                modifier = modifier
-                    .align(Alignment.BottomEnd)
-                    .offset(x = (-8).dp, y = (-8).dp)
-            ) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                    contentDescription = if (isFavorite) "Unfavorite" else "Favorite",
-                    tint = if (isFavorite) Color.Red else Color.Gray,
-                    modifier = modifier.size(36.dp)
-                )
-            }
         }
         Spacer(modifier = modifier.height(8.dp))
         Text(
@@ -316,12 +273,12 @@ fun CharacterDetailContent(
         )
         Spacer(modifier = modifier.height(8.dp))
         Text(
-            text = "Description",
+            text = "Bio",
             style = MaterialTheme.typography.displaySmall,
             fontSize = 20.sp,
         )
         Text(
-            text = character.description.takeIf { it.isNotBlank() } ?: "No description available.",
+            text = character.description.takeIf { it.isNotBlank() } ?: "No information available.",
             textAlign = TextAlign.Justify,
         )
         Spacer(modifier = modifier.height(16.dp))
@@ -335,44 +292,52 @@ fun CharacterDetailContent(
                 modifier = modifier.align(Alignment.CenterHorizontally)
             )
         } else {
-            LazyVerticalGrid( columns = GridCells.Fixed(2),
-                modifier = modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(comics) { comic ->
-                    ComicItem(comic)
+            if (comics.isEmpty()) {
+                Text(
+                    text = "No comics available.",
+                    textAlign = TextAlign.Center,
+                    modifier = modifier.fillMaxWidth()
+                )
+            } else {
+                LazyRow {
+                    items(comics) { comic ->
+                        ComicItem(comic)
+                    }
                 }
             }
         }
-        Spacer(modifier = modifier.height(16.dp))
     }
+    Spacer(modifier = modifier.height(16.dp))
 }
+
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ComicItem(comic: Comic, modifier: Modifier = Modifier) {
+fun ComicItem(comic: Comic) {
     Column(
-        modifier = modifier
+        modifier = Modifier
+            .width(120.dp)
             .padding(8.dp)
             .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
     ) {
         GlideImage(
             model = "${comic.thumbnail.path}.${comic.thumbnail.extension}",
             contentDescription = comic.title,
-            modifier = modifier
-                .clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.None
+            modifier = Modifier
+                .height(180.dp)
+                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
+            contentScale = ContentScale.Crop
         )
-        Spacer(modifier = modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = comic.title,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(4.dp),
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

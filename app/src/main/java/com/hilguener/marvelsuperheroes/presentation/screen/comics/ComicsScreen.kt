@@ -1,6 +1,9 @@
 package com.hilguener.marvelsuperheroes.presentation.screen.comics
 
 import android.widget.Toast
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -66,7 +70,6 @@ import org.koin.androidx.compose.koinViewModel
 internal fun ComicsScreen(modifier: Modifier = Modifier) {
     val viewModel: ComicsViewModel = koinViewModel()
     val state = viewModel.state
-
     val context = LocalContext.current
     val bottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -77,6 +80,7 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
     val searchQuery = rememberSaveable { mutableStateOf("") }
     val localFocusManager = LocalFocusManager.current
     val comics = viewModel.comicsPager.collectAsLazyPagingItems()
+    var clickedItemId by rememberSaveable { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(context) {
         viewModel.events.collect { event ->
@@ -166,14 +170,17 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
                                 comic?.let {
                                     ComicItem(
                                         comic = it,
-                                        modifier = Modifier.clickable {
-                                            isSheetOpen = true
-                                            selectedComic.value = it
-                                            coroutineScope.launch {
-                                                viewModel.getCharactersComicById(it.id)
-                                                bottomSheetState.show()
+                                        modifier = Modifier
+                                            .clickable {
+                                                isSheetOpen = true
+                                                selectedComic.value = it
+                                                clickedItemId = it.id
+                                                coroutineScope.launch {
+                                                    viewModel.getCharactersComicById(it.id)
+                                                    bottomSheetState.show()
+                                                }
                                             }
-                                        })
+                                    )
                                 }
                             }
 

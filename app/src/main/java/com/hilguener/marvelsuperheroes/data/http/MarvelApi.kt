@@ -111,4 +111,41 @@ interface MarvelApi {
         @Query("offset") offset: Int = 0,
         @Query("limit") limit: Int = Constants.LIMIT,
     ): Response<ComicsDataWrapper>
+
+    @GET("/v1/public/characters")
+    suspend fun getCharactersCarrousel(
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timestamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("offset") offset: Int = 301,
+        @Query("limit") limit: Int = 20,
+    ): Response<CharactersDataWrapper>
+
+    @GET("/v1/public/comics")
+    suspend fun getComicsCarrousel(
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timestamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("offset") offset: Int = 100,
+        @Query("limit") limit: Int = 20,
+    ): Response<ComicsDataWrapper>
+
+
+    @GET("/v1/public/series")
+    suspend fun getSeriesCarrousel(
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timestamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("offset") offset: Int = 104,
+        @Query("limit") limit: Int = 6,
+    ): Response<SeriesDataWrapper>
+
+    @GET("/v1/public/events")
+    suspend fun getEventsCarrousel(
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timestamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("offset") offset: Int = 0,
+        @Query("limit") limit: Int = 20,
+    ): Response<EventDataWrapper>
 }

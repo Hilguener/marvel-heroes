@@ -9,16 +9,21 @@ import com.hilguener.marvelsuperheroes.data.repository.ConnectivityRepository
 import com.hilguener.marvelsuperheroes.data.repository.HttpRepository
 import com.hilguener.marvelsuperheroes.data.repository.HttpRepositoryImpl
 import com.hilguener.marvelsuperheroes.data.util.Constants
+import com.hilguener.marvelsuperheroes.domain.use_case.GetCharactersCarrouselUseCase
 import com.hilguener.marvelsuperheroes.domain.use_case.GetCharactersComicByIdUseCase
 import com.hilguener.marvelsuperheroes.domain.use_case.GetCharactersComicsByIdUseCase
 import com.hilguener.marvelsuperheroes.domain.use_case.GetCharactersUseCase
+import com.hilguener.marvelsuperheroes.domain.use_case.GetComicsCarrouselUseCase
 import com.hilguener.marvelsuperheroes.domain.use_case.GetComicsUseCase
 import com.hilguener.marvelsuperheroes.domain.use_case.GetCreatorComicsById
 import com.hilguener.marvelsuperheroes.domain.use_case.GetCreatorsUseCase
+import com.hilguener.marvelsuperheroes.domain.use_case.GetEventsCarrouselUseCase
 import com.hilguener.marvelsuperheroes.domain.use_case.GetEventsUseCase
+import com.hilguener.marvelsuperheroes.domain.use_case.GetSeriesCarrouselUseCase
 import com.hilguener.marvelsuperheroes.domain.use_case.GetSeriesUseCase
 import com.hilguener.marvelsuperheroes.domain.use_case.GetStoriesUseCase
 import com.hilguener.marvelsuperheroes.domain.use_case.ManagerUseCase
+import com.hilguener.marvelsuperheroes.presentation.home.vm.HomeViewModel
 import com.hilguener.marvelsuperheroes.presentation.screen.characters.vm.CharactersViewModel
 import com.hilguener.marvelsuperheroes.presentation.screen.comics.vm.ComicsViewModel
 import com.hilguener.marvelsuperheroes.presentation.screen.creators.vm.CreatorsViewModel
@@ -68,7 +73,10 @@ val androidModule = module {
     single { GetCreatorsUseCase(get()) }
     single { GetCreatorComicsById(get()) }
     single { GetCharactersComicByIdUseCase(get()) }
-
+    single { GetCharactersCarrouselUseCase(get()) }
+    single { GetComicsCarrouselUseCase(get()) }
+    single { GetSeriesCarrouselUseCase(get()) }
+    single { GetEventsCarrouselUseCase(get()) }
     single {
         ManagerUseCase(
             getCharactersUseCase = get(),
@@ -80,6 +88,10 @@ val androidModule = module {
             getCreatorsUseCase = get(),
             getCreatorComicsById = get(),
             getCharactersComicById = get(),
+            getCharactersCarrousel = get(),
+            getComicsCarrousel = get(),
+            getSeriesCarrousel = get(),
+            getEventsCarrousel = get()
         )
     }
 
@@ -89,5 +101,5 @@ val androidModule = module {
     viewModel { EventsViewModel(get()) }
     viewModel { StoriesViewModel(get()) }
     viewModel { CreatorsViewModel(get()) }
-
+    viewModel { HomeViewModel(get()) }
 }

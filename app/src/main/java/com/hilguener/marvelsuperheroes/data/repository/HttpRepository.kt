@@ -19,4 +19,8 @@ interface HttpRepository {
     suspend fun getStories(page: Int): Response<StoryDataWrapper>
     suspend fun getCreators(page: Int, name: String? = null ): Response<CreatorDataWrapper>
     suspend fun getCreatorComicsById(creatorId: Int): Response<ComicsDataWrapper>
+    suspend fun getCharactersCarrousel(): Response<CharactersDataWrapper>
+    suspend fun getComicsCarrousel(): Response<ComicsDataWrapper>
+    suspend fun getSeriesCarrousel(): Response<SeriesDataWrapper>
+    suspend fun getEventsCarrousel(): Response<EventDataWrapper>
 }

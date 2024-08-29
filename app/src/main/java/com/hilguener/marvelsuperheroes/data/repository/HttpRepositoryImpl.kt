@@ -33,7 +33,6 @@ class HttpRepositoryImpl(private val marvelApi: MarvelApi) : HttpRepository {
         return marvelApi.getComicCharactersById(comicId)
     }
 
-
     override suspend fun getSeries(page: Int, name: String?): Response<SeriesDataWrapper> {
         val offset = (page - 1) * Constants.LIMIT
         return marvelApi.getSeries(offset = offset, titleStartsWith = name)
@@ -56,6 +55,22 @@ class HttpRepositoryImpl(private val marvelApi: MarvelApi) : HttpRepository {
 
     override suspend fun getCreatorComicsById(creatorId: Int): Response<ComicsDataWrapper> {
         return marvelApi.getCreatorComicsById(creatorId)
+    }
+
+    override suspend fun getCharactersCarrousel(): Response<CharactersDataWrapper> {
+        return marvelApi.getCharactersCarrousel()
+    }
+
+    override suspend fun getComicsCarrousel(): Response<ComicsDataWrapper> {
+       return marvelApi.getComicsCarrousel()
+    }
+
+    override suspend fun getSeriesCarrousel(): Response<SeriesDataWrapper> {
+        return marvelApi.getSeriesCarrousel()
+    }
+
+    override suspend fun getEventsCarrousel(): Response<EventDataWrapper> {
+        return marvelApi.getEventsCarrousel()
     }
 
 }
