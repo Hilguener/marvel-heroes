@@ -1,11 +1,18 @@
 package com.hilguener.marvelsuperheroes.presentation.home.vm
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hilguener.marvelsuperheroes.domain.model.character.Character
 import com.hilguener.marvelsuperheroes.domain.model.comic.Comic
 import com.hilguener.marvelsuperheroes.domain.model.series.Series
 import com.hilguener.marvelsuperheroes.domain.use_case.ManagerUseCase
+import com.hilguener.marvelsuperheroes.domain.use_case.state.CharactersState
+import com.hilguener.marvelsuperheroes.domain.use_case.state.ComicsState
+import com.hilguener.marvelsuperheroes.presentation.screen.characters.vm.CharactersViewModel
+import com.hilguener.marvelsuperheroes.presentation.screen.comics.vm.ComicsViewModel.Event
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +21,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
+
+    var comicState by mutableStateOf(ComicsState())
+    var characterState by mutableStateOf(CharactersState())
 
     private val _charactersCarrousel = MutableStateFlow<List<Character>>(emptyList())
     val charactersCarrousel: StateFlow<List<Character>> = _charactersCarrousel.asStateFlow()
@@ -112,6 +122,34 @@ class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
             series?.let {
                 _eventsCarrousel.value = it
                 _eventChannel.send(Event.ShowSuccess(it))
+            }
+        }
+    }
+
+    fun getCharactersComicById(comicId: Int) {
+        viewModelScope.launch {
+            comicState = comicState.copy(isLoading = true, error = null)
+            val result = managerUseCase.getCharactersComicById(comicId) { errorMsg ->
+                _eventChannel.send(Event.ShowError(errorMsg))
+            }
+            result?.let {
+                comicState = comicState.copy(characters = it, isLoading = false)
+            } ?: run {
+                comicState = comicState.copy(isLoading = false, error = "Failed to load comics")
+            }
+        }
+    }
+
+    fun getCharactersComicsById(characterId: Int) {
+        viewModelScope.launch {
+            characterState = characterState.copy(isLoadingComics = true, error = null)
+            val result = managerUseCase.getCharactersComicsById(characterId) { errorMsg ->
+                _eventChannel.send(Event.ShowError(errorMsg))
+            }
+            result?.let {
+                characterState = characterState.copy(comics = it, isLoadingComics = false)
+            } ?: run {
+                characterState = characterState.copy(isLoadingComics = false, error = "Failed to load comics")
             }
         }
     }

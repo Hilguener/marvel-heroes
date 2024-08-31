@@ -1,5 +1,6 @@
 package com.hilguener.marvelsuperheroes.presentation.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,17 +22,24 @@ import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -52,10 +60,14 @@ import com.hilguener.marvelsuperheroes.presentation.navigation.AppBar
 import com.hilguener.marvelsuperheroes.presentation.navigation.DrawerBody
 import com.hilguener.marvelsuperheroes.presentation.navigation.DrawerHeader
 import com.hilguener.marvelsuperheroes.presentation.navigation.NavDrawerItem
+import com.hilguener.marvelsuperheroes.presentation.screen.characters.CharacterDetailContent
 import com.hilguener.marvelsuperheroes.presentation.screen.characters.CharactersScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.comics.ComicDetailContent
 import com.hilguener.marvelsuperheroes.presentation.screen.comics.ComicsScreen
 import com.hilguener.marvelsuperheroes.presentation.screen.creators.CreatorsScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.events.EventDetailContent
 import com.hilguener.marvelsuperheroes.presentation.screen.events.EventsScreen
+import com.hilguener.marvelsuperheroes.presentation.screen.series.SeriesDetailContent
 import com.hilguener.marvelsuperheroes.presentation.screen.series.SeriesScreen
 import com.hilguener.marvelsuperheroes.presentation.screen.stories.StoriesScreen
 import kotlinx.coroutines.launch
@@ -191,9 +203,12 @@ fun MyApp(modifier: Modifier = Modifier) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenContent(modifier: Modifier = Modifier) {
     val viewModel: HomeViewModel = koinViewModel()
+    val comicState = viewModel.comicState
+    val charactersState = viewModel.characterState
     val characters by viewModel.charactersCarrousel.collectAsState()
     val comics by viewModel.comicsCarrousel.collectAsState()
     val series by viewModel.seriesCarrousel.collectAsState()
@@ -202,8 +217,76 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
     val isLoadingComics by viewModel.isLoadingComics.collectAsState()
     val isLoadingSeries by viewModel.isLoadingSeries.collectAsState()
     val isLoadingEvents by viewModel.isLoadingEvents.collectAsState()
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    var isCharacterSheetOpen by rememberSaveable { mutableStateOf(false) }
+    var isComicSheetOpen by rememberSaveable { mutableStateOf(false) }
+    var isEventSheetOpen by rememberSaveable { mutableStateOf(false) }
+    var isSeriesSheetOpen by rememberSaveable { mutableStateOf(false) }
+    val selectedCharacter = remember { mutableStateOf<Character?>(null) }
+    val selectedComic = remember { mutableStateOf<Comic?>(null) }
+    val selectedEvent = remember { mutableStateOf<Event?>(null) }
+    val selectedSeries = remember { mutableStateOf<Series?>(null) }
+    var clickedItemId by rememberSaveable { mutableStateOf<Int?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
-    Column(modifier.padding(8.dp).verticalScroll(rememberScrollState())) {
+    if (isCharacterSheetOpen) {
+        ModalBottomSheet(
+            sheetState = bottomSheetState,
+            onDismissRequest = { isCharacterSheetOpen = false },
+        ) {
+            selectedCharacter.value?.let { character ->
+                CharacterDetailContent(
+                    character = character,
+                    comics = charactersState.comics,
+                    isLoadingComics = charactersState.isLoadingComics
+                )
+            }
+        }
+    }
+
+    if (isComicSheetOpen) {
+        ModalBottomSheet(
+            sheetState = bottomSheetState,
+            onDismissRequest = { isComicSheetOpen = false },
+        ) {
+            selectedComic.value?.let { comic ->
+                ComicDetailContent(
+                    comic = comic,
+                    characters = comicState.characters,
+                    isLoadingCharacters = comicState.isLoading
+                )
+            }
+        }
+    }
+    if (isEventSheetOpen) {
+        ModalBottomSheet(
+            sheetState = bottomSheetState,
+            onDismissRequest = { isEventSheetOpen = false },
+        ) {
+            selectedEvent.value?.let { event ->
+                EventDetailContent(event = event)
+            }
+        }
+    }
+
+    if (isSeriesSheetOpen) {
+        ModalBottomSheet(
+            sheetState = bottomSheetState,
+            onDismissRequest = { isSeriesSheetOpen = false },
+        ) {
+            selectedSeries.value?.let { serie ->
+                SeriesDetailContent(series = serie)
+            }
+        }
+    }
+
+    Column(
+        modifier
+            .padding(8.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Text(text = "Characters", style = MaterialTheme.typography.displaySmall, fontSize = 20.sp)
 
         Box(
@@ -216,7 +299,16 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
             } else {
                 LazyRow {
                     items(characters) { character ->
-                        MainCharacterItem(character = character)
+                        MainCharacterItem(character = character, modifier = modifier.clickable {
+                            clickedItemId = character.id
+                            isCharacterSheetOpen = true
+                            selectedCharacter.value = character
+                            coroutineScope.launch {
+                                viewModel.getCharactersComicsById(character.id)
+                                bottomSheetState.show()
+                            }
+
+                        })
                     }
                 }
             }
@@ -236,7 +328,15 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
             } else {
                 LazyRow {
                     items(comics) { comic ->
-                        MainComicItem(comic = comic)
+                        MainComicItem(comic = comic, modifier = modifier.clickable {
+                            clickedItemId = comic.id
+                            isComicSheetOpen = true
+                            selectedComic.value = comic
+                            coroutineScope.launch {
+                                viewModel.getCharactersComicById(comic.id)
+                                bottomSheetState.show()
+                            }
+                        })
                     }
                 }
             }
@@ -256,7 +356,14 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
             } else {
                 LazyRow {
                     items(series) { serie ->
-                        MainSeriesItem(serie = serie)
+                        MainSeriesItem(serie = serie, modifier = modifier.clickable {
+                            clickedItemId = serie.id
+                            isSeriesSheetOpen = true
+                            selectedSeries.value = serie
+                            coroutineScope.launch {
+                                bottomSheetState.show()
+                            }
+                        })
                     }
                 }
             }
@@ -275,7 +382,14 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
             } else {
                 LazyRow {
                     items(events) { event ->
-                        MainEventItem(event = event)
+                        MainEventItem(event = event, modifier = modifier.clickable {
+                            clickedItemId = event.id
+                            isEventSheetOpen = true
+                            selectedEvent.value = event
+                            coroutineScope.launch {
+                                bottomSheetState.show()
+                            }
+                        })
                     }
                 }
             }

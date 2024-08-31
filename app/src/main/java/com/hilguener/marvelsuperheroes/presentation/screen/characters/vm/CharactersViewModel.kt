@@ -61,30 +61,6 @@ class CharactersViewModel(private val managerUseCase: ManagerUseCase) : ViewMode
         }
     }
 
-    fun addFavorite(character: Character) {
-        viewModelScope.launch {
-            _favoriteCharacters.value += character.id
-            _eventChannel.send(Event.ShowSuccess())
-        }
-    }
-
-    fun removeFavorite(character: Character) {
-        viewModelScope.launch {
-            _favoriteCharacters.value -= character.id
-            _eventChannel.send(Event.ShowSuccess())
-        }
-    }
-
-    fun isFavorite(character: Character): Boolean {
-        return _favoriteCharacters.value.contains(character.id)
-    }
-
-    fun getFavoriteCharacters(allCharacters: List<Character>): List<Character> {
-        return allCharacters.filter { character ->
-            _favoriteCharacters.value.contains(character.id)
-        }
-    }
-
     sealed class Event {
         data class ShowError(val message: String) : Event()
         data class ShowSuccess(val message: String = "Success") : Event()
