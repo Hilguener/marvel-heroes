@@ -7,5 +7,5 @@ data class StoryDataWrapper(
     val copyright: String,
     val `data`: StoryDataContainer,
     val etag: String,
-    val status: String
+    val status: String,
 )

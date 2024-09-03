@@ -10,7 +10,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,9 +21,9 @@ import com.hilguener.marvelsuperheroes.presentation.splash.SplashScreen
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-
 class MainActivity : ComponentActivity() {
     private val connectivityRepository: ConnectivityRepository by inject()
+
     @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +31,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         lifecycleScope.launch {
             connectivityRepository.isConnected.collect { isConnected ->
-                val message = if (isConnected) {
-                    getString(R.string.connected_to_internet)
-                } else {
-                    getString(R.string.no_internet_connection)
-                }
+                val message =
+                    if (isConnected) {
+                        getString(R.string.connected_to_internet)
+                    } else {
+                        getString(R.string.no_internet_connection)
+                    }
                 Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
             }
         }
@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold {
                     NavHost(
                         navController = navController,
-                        startDestination = "splash_screen"
+                        startDestination = "splash_screen",
                     ) {
                         composable("splash_screen") {
                             SplashScreen(
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("my_app") {
                                         popUpTo("splash_screen") { inclusive = true }
                                     }
-                                }
+                                },
                             )
                         }
                         composable("my_app") {

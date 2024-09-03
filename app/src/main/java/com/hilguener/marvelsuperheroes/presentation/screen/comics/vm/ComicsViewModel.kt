@@ -10,8 +10,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.hilguener.marvelsuperheroes.data.util.Constants
-import com.hilguener.marvelsuperheroes.domain.use_case.ManagerUseCase
-import com.hilguener.marvelsuperheroes.domain.use_case.state.ComicsState
+import com.hilguener.marvelsuperheroes.domain.usecase.ManagerUseCase
+import com.hilguener.marvelsuperheroes.domain.usecase.state.ComicsState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,11 +22,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ComicsViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
-
     var state by mutableStateOf(ComicsState())
 
-    private val _eventChannel = Channel<Event>()
-    val events = _eventChannel.receiveAsFlow()
+    private val eventChannel = Channel<Event>()
+    val events = eventChannel.receiveAsFlow()
 
     private val searchQuery = MutableStateFlow<String?>(null)
 
@@ -35,19 +34,21 @@ class ComicsViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() 
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val comicsPager = searchQuery.flatMapLatest { query ->
-        Pager(
-            config = PagingConfig(pageSize = Constants.LIMIT, enablePlaceholders = false),
-            pagingSourceFactory = { managerUseCase.getComicsPagingSource(query) }
-        ).flow.cachedIn(viewModelScope)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+    val comicsPager =
+        searchQuery.flatMapLatest { query ->
+            Pager(
+                config = PagingConfig(pageSize = Constants.LIMIT, enablePlaceholders = false),
+                pagingSourceFactory = { managerUseCase.getComicsPagingSource(query) },
+            ).flow.cachedIn(viewModelScope)
+        }.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
     fun getCharactersComicById(comicId: Int) {
         viewModelScope.launch {
             state = state.copy(isLoading = true, error = null)
-            val result = managerUseCase.getCharactersComicById(comicId) { errorMsg ->
-                _eventChannel.send(Event.ShowError(errorMsg))
-            }
+            val result =
+                managerUseCase.getCharactersComicById(comicId) { errorMsg ->
+                    eventChannel.send(Event.ShowError(errorMsg))
+                }
             result?.let {
                 state = state.copy(characters = it, isLoading = false)
             } ?: run {
@@ -55,8 +56,10 @@ class ComicsViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() 
             }
         }
     }
+
     sealed class Event {
         data class ShowError(val message: String) : Event()
+
         data class ShowSuccess(val message: String = "Success") : Event()
     }
 }

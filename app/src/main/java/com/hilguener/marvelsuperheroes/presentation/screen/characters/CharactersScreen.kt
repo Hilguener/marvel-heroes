@@ -52,14 +52,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.example.compose.MarvelSuperHeroesTheme
 import com.hilguener.marvelsuperheroes.domain.model.character.Character
 import com.hilguener.marvelsuperheroes.domain.model.comic.Comic
 import com.hilguener.marvelsuperheroes.presentation.screen.characters.vm.CharactersViewModel
@@ -72,9 +70,10 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
     val viewModel: CharactersViewModel = koinViewModel()
     val state = viewModel.state
     val context = LocalContext.current
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     val selectedCharacter = remember { mutableStateOf<Character?>(null) }
     val coroutineScope = rememberCoroutineScope()
@@ -106,7 +105,7 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
                 CharacterDetailContent(
                     character = character,
                     comics = state.comics,
-                    isLoadingComics = state.isLoadingComics
+                    isLoadingComics = state.isLoadingComics,
                 )
             }
         }
@@ -120,48 +119,54 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
                     searchQuery.value = query
                 },
                 label = { Text("Search characters...") },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = null)
                 },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search,
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
-                        localFocusManager.clearFocus()
-                    }
-                )
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Search,
+                    ),
+                keyboardActions =
+                    KeyboardActions(
+                        onSearch = {
+                            viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
+                            localFocusManager.clearFocus()
+                        },
+                    ),
             )
             Box(modifier = modifier.weight(1f)) {
                 if (characters.loadState.refresh is LoadState.Loading) {
                     Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
                 } else if (characters.itemCount == 0 && searchQuery.value.isNotBlank()) {
                     Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "No characters found",
                             style = MaterialTheme.typography.displaySmall,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 } else {
-                    LazyVerticalGrid(columns = GridCells.Fixed(2),
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
                         contentPadding = paddingValues,
                         modifier = modifier.padding(horizontal = 16.dp),
                         content = {
@@ -170,17 +175,17 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
                                 character?.let {
                                     CharacterItem(
                                         character = it,
-                                        modifier = modifier
-                                            .clickable {
-                                                clickedItemId = it.id
-                                                isSheetOpen = true
-                                                selectedCharacter.value = it
-                                                coroutineScope.launch {
-                                                    viewModel.getCharactersComicsById(it.id)
-                                                    bottomSheetState.show()
-                                                }
-                                            }
-
+                                        modifier =
+                                            modifier
+                                                .clickable {
+                                                    clickedItemId = it.id
+                                                    isSheetOpen = true
+                                                    selectedCharacter.value = it
+                                                    coroutineScope.launch {
+                                                        viewModel.getCharactersComicsById(it.id)
+                                                        bottomSheetState.show()
+                                                    }
+                                                },
                                     )
                                 }
                             }
@@ -188,16 +193,18 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
                             if (characters.loadState.append is LoadState.Loading) {
                                 item(span = { GridItemSpan(maxLineSpan) }) {
                                     Box(
-                                        modifier = modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 16.dp),
-                                        contentAlignment = Alignment.Center
+                                        modifier =
+                                            modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp),
+                                        contentAlignment = Alignment.Center,
                                     ) {
                                         CircularProgressIndicator()
                                     }
                                 }
                             }
-                        })
+                        },
+                    )
 
                     if (characters.loadState.append is LoadState.Error) {
                         val e = characters.loadState.append as LoadState.Error
@@ -209,30 +216,34 @@ internal fun CharactersScreen(modifier: Modifier = Modifier) {
     }
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CharacterItem(character: Character, modifier: Modifier = Modifier) {
+fun CharacterItem(
+    character: Character,
+    modifier: Modifier = Modifier,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .padding(bottom = 16.dp)
-            .wrapContentSize()
+        modifier =
+            modifier
+                .padding(bottom = 16.dp)
+                .wrapContentSize(),
     ) {
         GlideImage(
             model = "${character.thumbnail.path}.${character.thumbnail.extension}",
             contentDescription = character.name,
-            modifier = modifier
-                .size(120.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
+            modifier =
+                modifier
+                    .size(120.dp)
+                    .clip(CircleShape),
+            contentScale = ContentScale.Crop,
         )
         Spacer(modifier = modifier.height(8.dp))
         Text(
             text = character.name,
             style = MaterialTheme.typography.displaySmall,
             textAlign = TextAlign.Center,
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth(),
         )
     }
 }
@@ -243,26 +254,29 @@ fun CharacterDetailContent(
     character: Character,
     comics: List<Comic>,
     isLoadingComics: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
     ) {
         Box(
-            modifier = modifier
-                .size(240.dp)
-                .align(Alignment.CenterHorizontally)
+            modifier =
+                modifier
+                    .size(240.dp)
+                    .align(Alignment.CenterHorizontally),
         ) {
             GlideImage(
                 model = "${character.thumbnail.path}/portrait_uncanny.${character.thumbnail.extension}",
                 contentDescription = character.name,
-                modifier = modifier
-                    .size(240.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
+                modifier =
+                    modifier
+                        .size(240.dp)
+                        .clip(CircleShape),
+                contentScale = ContentScale.Crop,
             )
         }
         Spacer(modifier = modifier.height(8.dp))
@@ -271,7 +285,7 @@ fun CharacterDetailContent(
             style = MaterialTheme.typography.displaySmall,
             textAlign = TextAlign.Center,
             fontSize = 24.sp,
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth(),
         )
         Spacer(modifier = modifier.height(8.dp))
         Text(
@@ -291,14 +305,14 @@ fun CharacterDetailContent(
         )
         if (isLoadingComics) {
             CircularProgressIndicator(
-                modifier = modifier.align(Alignment.CenterHorizontally)
+                modifier = modifier.align(Alignment.CenterHorizontally),
             )
         } else {
             if (comics.isEmpty()) {
                 Text(
                     text = "No comics available.",
                     textAlign = TextAlign.Center,
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier.fillMaxWidth(),
                 )
             } else {
                 LazyRow {
@@ -312,35 +326,36 @@ fun CharacterDetailContent(
     Spacer(modifier = modifier.height(16.dp))
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ComicItem(comic: Comic) {
     Column(
-        modifier = Modifier
-            .width(120.dp)
-            .padding(8.dp)
-            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
+        modifier =
+            Modifier
+                .width(120.dp)
+                .padding(8.dp)
+                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp)),
     ) {
         GlideImage(
             model = "${comic.thumbnail.path}.${comic.thumbnail.extension}",
             contentDescription = comic.title,
-            modifier = Modifier
-                .height(180.dp)
-                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
-            contentScale = ContentScale.Crop
+            modifier =
+                Modifier
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
+            contentScale = ContentScale.Crop,
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = comic.title,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }
-

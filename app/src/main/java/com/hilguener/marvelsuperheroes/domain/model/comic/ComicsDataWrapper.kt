@@ -7,5 +7,5 @@ data class ComicsDataWrapper(
     val copyright: String,
     val `data`: ComicsDataContainer,
     val etag: String,
-    val status: String
+    val status: String,
 )

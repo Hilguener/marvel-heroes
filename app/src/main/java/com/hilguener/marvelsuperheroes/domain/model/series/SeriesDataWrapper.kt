@@ -7,5 +7,5 @@ data class SeriesDataWrapper(
     val copyright: String,
     val `data`: SeriesDataContainer,
     val etag: String,
-    val status: String
+    val status: String,
 )

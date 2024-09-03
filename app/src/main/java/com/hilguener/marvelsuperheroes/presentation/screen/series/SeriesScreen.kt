@@ -64,9 +64,10 @@ internal fun SeriesScreen(modifier: Modifier = Modifier) {
     val localFocusManager = LocalFocusManager.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     val selectedSeries = remember { mutableStateOf<Series?>(null) }
 
@@ -91,7 +92,7 @@ internal fun SeriesScreen(modifier: Modifier = Modifier) {
         ) {
             selectedSeries.value?.let { series ->
                 SeriesDetailContent(
-                    series = series
+                    series = series,
                 )
             }
         }
@@ -99,78 +100,92 @@ internal fun SeriesScreen(modifier: Modifier = Modifier) {
 
     Scaffold(modifier = modifier) { paddingValues ->
         Column(modifier = modifier.fillMaxSize()) {
-            OutlinedTextField(value = searchQuery.value,
+            OutlinedTextField(
+                value = searchQuery.value,
                 onValueChange = { query ->
                     searchQuery.value = query
                 },
                 label = { Text("Search series...") },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = null)
                 },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search,
-                ),
-                keyboardActions = KeyboardActions(onSearch = {
-                    viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
-                    localFocusManager.clearFocus()
-                }))
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Search,
+                    ),
+                keyboardActions =
+                    KeyboardActions(onSearch = {
+                        viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
+                        localFocusManager.clearFocus()
+                    }),
+            )
             Box(modifier = modifier.weight(1f)) {
                 if (series.loadState.refresh is LoadState.Loading) {
                     Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
                 } else if (series.itemCount == 0 && searchQuery.value.isNotBlank()) {
                     Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "No characters found",
                             style = MaterialTheme.typography.displaySmall,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 } else {
-                    LazyColumn(contentPadding = paddingValues,
+                    LazyColumn(
+                        contentPadding = paddingValues,
                         modifier = modifier.padding(horizontal = 16.dp),
                         content = {
                             items(series.itemCount) { index ->
                                 val serie = series[index]
                                 serie?.let {
-                                    SeriesItem(series = it, modifier = modifier.clickable {
-                                        isSheetOpen = true
-                                        selectedSeries.value = it
-                                        coroutineScope.launch {
-                                            bottomSheetState.show()
-                                        }
-                                    })
+                                    SeriesItem(
+                                        series = it,
+                                        modifier =
+                                            modifier.clickable {
+                                                isSheetOpen = true
+                                                selectedSeries.value = it
+                                                coroutineScope.launch {
+                                                    bottomSheetState.show()
+                                                }
+                                            },
+                                    )
                                 }
                             }
 
                             if (series.loadState.append is LoadState.Loading) {
                                 item {
                                     Box(
-                                        modifier = modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 16.dp),
-                                        contentAlignment = Alignment.Center
+                                        modifier =
+                                            modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp),
+                                        contentAlignment = Alignment.Center,
                                     ) {
                                         CircularProgressIndicator()
                                     }
                                 }
                             }
-                        })
+                        },
+                    )
 
                     if (series.loadState.append is LoadState.Error) {
                         val e = series.loadState.append as LoadState.Error
@@ -184,27 +199,33 @@ internal fun SeriesScreen(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun SeriesDetailContent(series: Series?, modifier: Modifier = Modifier) {
+fun SeriesDetailContent(
+    series: Series?,
+    modifier: Modifier = Modifier,
+) {
     LazyColumn(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(8.dp),
     ) {
         item {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
             ) {
                 GlideImage(
                     model = "${series?.thumbnail?.path}/portrait_fantastic.${series?.thumbnail?.extension}",
                     contentDescription = series?.title,
-                    modifier = modifier
-                        .width(200.dp)
-                        .height(260.dp)
-                        .clip(RoundedCornerShape(40.dp)),
-                    contentScale = ContentScale.Fit
+                    modifier =
+                        modifier
+                            .width(200.dp)
+                            .height(260.dp)
+                            .clip(RoundedCornerShape(40.dp)),
+                    contentScale = ContentScale.Fit,
                 )
                 Spacer(modifier = modifier.width(16.dp))
                 Column {
@@ -212,7 +233,7 @@ fun SeriesDetailContent(series: Series?, modifier: Modifier = Modifier) {
                         text = series?.title ?: "",
                         style = MaterialTheme.typography.displaySmall,
                         textAlign = TextAlign.Center,
-                        modifier = modifier.fillMaxWidth()
+                        modifier = modifier.fillMaxWidth(),
                     )
                 }
             }
@@ -227,8 +248,9 @@ fun SeriesDetailContent(series: Series?, modifier: Modifier = Modifier) {
         }
         item {
             Text(
-                text = series?.description?.takeIf { it.isNotBlank() }
-                    ?: "No description available.",
+                text =
+                    series?.description?.takeIf { it.isNotBlank() }
+                        ?: "No description available.",
                 textAlign = TextAlign.Justify,
             )
         }
@@ -244,7 +266,6 @@ fun SeriesDetailContent(series: Series?, modifier: Modifier = Modifier) {
                     text = series?.type?.takeIf { it.isNotBlank() } ?: "No type available.",
                 )
             }
-
         }
 
         item {
@@ -259,7 +280,6 @@ fun SeriesDetailContent(series: Series?, modifier: Modifier = Modifier) {
                     text = series?.rating?.takeIf { it.isNotBlank() } ?: "No rating available.",
                 )
             }
-
         }
         item {
             Row {
@@ -290,14 +310,13 @@ fun SeriesDetailContent(series: Series?, modifier: Modifier = Modifier) {
     }
 }
 
-
 @Composable
 fun SeriesItem(
     series: Series,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
-        modifier = modifier.padding(8.dp)
+        modifier = modifier.padding(8.dp),
     ) {
         Column {
             SeriesIcon(image = "${series.thumbnail.path}.${series.thumbnail.extension}")
@@ -307,9 +326,7 @@ fun SeriesItem(
             )
         }
     }
-
 }
-
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -319,9 +336,10 @@ fun SeriesIcon(
 ) {
     GlideImage(
         model = image,
-        modifier = modifier
-            .clip(MaterialTheme.shapes.small)
-            .sizeIn(72.dp),
+        modifier =
+            modifier
+                .clip(MaterialTheme.shapes.small)
+                .sizeIn(72.dp),
         contentScale = ContentScale.None,
         contentDescription = null,
     )
@@ -337,9 +355,7 @@ fun SeriesInfo(
             text = seriesTitle,
             style = MaterialTheme.typography.displaySmall,
             textAlign = TextAlign.Center,
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth(),
         )
-
     }
 }
-

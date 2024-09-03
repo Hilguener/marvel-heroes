@@ -8,7 +8,7 @@ import com.hilguener.marvelsuperheroes.domain.model.character.Character
 
 class CharacterPagingSource(
     private val characterRepository: HttpRepository,
-    private val name: String? = null
+    private val name: String? = null,
 ) : PagingSource<Int, Character>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Character> {
         return try {
@@ -21,7 +21,7 @@ class CharacterPagingSource(
             LoadResult.Page(
                 data = characters,
                 prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
-                nextKey = if (nextPageNumber * Constants.LIMIT >= totalCount) null else nextKey
+                nextKey = if (nextPageNumber * Constants.LIMIT >= totalCount) null else nextKey,
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
@@ -35,7 +35,3 @@ class CharacterPagingSource(
         }
     }
 }
-
-
-
-

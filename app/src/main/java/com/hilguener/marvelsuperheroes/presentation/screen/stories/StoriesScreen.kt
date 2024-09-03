@@ -51,9 +51,10 @@ internal fun StoriesScreen(modifier: Modifier = Modifier) {
     val viewModel: StoriesViewModel = koinViewModel()
     val stories = viewModel.storiesPager.collectAsLazyPagingItems()
     val context = LocalContext.current
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     val selectedStory = remember { mutableStateOf<Story?>(null) }
     val coroutineScope = rememberCoroutineScope()
@@ -89,10 +90,11 @@ internal fun StoriesScreen(modifier: Modifier = Modifier) {
             Box(modifier = modifier.weight(1f)) {
                 if (stories.loadState.refresh is LoadState.Loading) {
                     Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
@@ -101,22 +103,27 @@ internal fun StoriesScreen(modifier: Modifier = Modifier) {
                         items(stories.itemCount) { index ->
                             val story = stories[index]
                             story?.let {
-                                StoryItem(story = it, modifier = modifier.clickable {
-                                    isSheetOpen = true
-                                    selectedStory.value = it
-                                    coroutineScope.launch {
-                                        bottomSheetState.show()
-                                    }
-                                })
+                                StoryItem(
+                                    story = it,
+                                    modifier =
+                                        modifier.clickable {
+                                            isSheetOpen = true
+                                            selectedStory.value = it
+                                            coroutineScope.launch {
+                                                bottomSheetState.show()
+                                            }
+                                        },
+                                )
                             }
                         }
                         if (stories.loadState.append is LoadState.Loading) {
                             item {
                                 Box(
-                                    modifier = modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 16.dp),
-                                    contentAlignment = Alignment.Center
+                                    modifier =
+                                        modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 16.dp),
+                                    contentAlignment = Alignment.Center,
                                 ) {
                                     CircularProgressIndicator()
                                 }
@@ -130,12 +137,15 @@ internal fun StoriesScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun StoryItem(story: Story, modifier: Modifier) {
+fun StoryItem(
+    story: Story,
+    modifier: Modifier,
+) {
     ElevatedCard(modifier = modifier.padding(8.dp)) {
         Row(
             modifier = modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.marvel),
@@ -153,53 +163,52 @@ fun StoryItem(story: Story, modifier: Modifier) {
 }
 
 @Composable
-fun StoryDetailContent(story: Story?, modifier: Modifier = Modifier) {
+fun StoryDetailContent(
+    story: Story?,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier = modifier.padding(8.dp)) {
-
         Text(
             text = "Title",
             style = MaterialTheme.typography.displaySmall,
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         Text(
             text = story?.title ?: "No title found",
-            textAlign = TextAlign.Justify
+            textAlign = TextAlign.Justify,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-
 
         Text(
             text = "Creators",
             style = MaterialTheme.typography.displaySmall,
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
-        val creatorsText = if (story?.creators?.items.isNullOrEmpty()) {
-            "No creators found"
-        } else {
-            story?.creators?.items?.joinToString { it.name } ?: "No creators found"
-        }
+        val creatorsText =
+            if (story?.creators?.items.isNullOrEmpty()) {
+                "No creators found"
+            } else {
+                story?.creators?.items?.joinToString { it.name } ?: "No creators found"
+            }
         Text(
             text = creatorsText,
-            textAlign = TextAlign.Justify
+            textAlign = TextAlign.Justify,
         )
 
-
         Spacer(modifier = Modifier.height(8.dp))
-
 
         Text(
             text = "Type",
             style = MaterialTheme.typography.displaySmall,
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         Text(text = story?.type ?: "No type found")
     }
 }
-

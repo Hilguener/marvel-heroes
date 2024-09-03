@@ -5,5 +5,5 @@ data class SeriesDataContainer(
     val limit: Int,
     val offset: Int,
     val results: List<Series>,
-    val total: Int
+    val total: Int,
 )

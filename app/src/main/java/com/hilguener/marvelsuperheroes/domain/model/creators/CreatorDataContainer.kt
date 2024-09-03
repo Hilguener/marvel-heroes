@@ -5,5 +5,5 @@ data class CreatorDataContainer(
     val limit: Int,
     val offset: Int,
     val results: List<Creator>,
-    val total: Int
+    val total: Int,
 )

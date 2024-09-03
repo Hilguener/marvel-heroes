@@ -13,5 +13,5 @@ data class Story(
     val series: Series,
     val thumbnail: Any,
     val title: String,
-    val type: String
+    val type: String,
 )

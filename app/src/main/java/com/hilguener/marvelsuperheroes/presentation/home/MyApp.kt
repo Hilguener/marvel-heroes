@@ -82,85 +82,110 @@ fun MyApp(modifier: Modifier = Modifier) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    val appBarTitle = when (currentRoute) {
-        "my_app" -> "Home"
-        "characters_screen" -> "Characters"
-        "comics_screen" -> "Comics"
-        "events_screen" -> "Events"
-        "stories_screen" -> "Stories"
-        "creators_screen" -> "Creators"
-        "series_screen" -> "Series"
-        else -> ""
-    }
+    val appBarTitle =
+        when (currentRoute) {
+            "my_app" -> "Home"
+            "characters_screen" -> "Characters"
+            "comics_screen" -> "Comics"
+            "events_screen" -> "Events"
+            "stories_screen" -> "Stories"
+            "creators_screen" -> "Creators"
+            "series_screen" -> "Series"
+            else -> ""
+        }
 
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         ModalDrawerSheet {
             DrawerHeader()
             HorizontalDivider()
-            DrawerBody(items = listOf(
-                NavDrawerItem(
-                    id = "home", title = "Home", icon = Icons.Default.Home
-                ), NavDrawerItem(
-                    id = "characters", title = "Characters", icon = Icons.Default.People
-                ), NavDrawerItem(
-                    id = "comics", title = "Comics", icon = Icons.Default.Book
-                ), NavDrawerItem(
-                    id = "events", title = "Events", icon = Icons.Default.CalendarToday
-                ), NavDrawerItem(
-                    id = "stories", title = "Stories", icon = Icons.Default.AutoStories
-                ), NavDrawerItem(
-                    id = "creators", title = "Creators", icon = Icons.Default.Edit
-                ), NavDrawerItem(
-                    id = "series", title = "Series", icon = Icons.Default.Tv
-                )
-            ), onItemClick = { item ->
-                when (item.id) {
-                    "home" -> {
-                        navController.navigate("my_app") {
-                            popUpTo("my_app") { inclusive = true }
+            DrawerBody(
+                items =
+                    listOf(
+                        NavDrawerItem(
+                            id = "home",
+                            title = "Home",
+                            icon = Icons.Default.Home,
+                        ),
+                        NavDrawerItem(
+                            id = "characters",
+                            title = "Characters",
+                            icon = Icons.Default.People,
+                        ),
+                        NavDrawerItem(
+                            id = "comics",
+                            title = "Comics",
+                            icon = Icons.Default.Book,
+                        ),
+                        NavDrawerItem(
+                            id = "events",
+                            title = "Events",
+                            icon = Icons.Default.CalendarToday,
+                        ),
+                        NavDrawerItem(
+                            id = "stories",
+                            title = "Stories",
+                            icon = Icons.Default.AutoStories,
+                        ),
+                        NavDrawerItem(
+                            id = "creators",
+                            title = "Creators",
+                            icon = Icons.Default.Edit,
+                        ),
+                        NavDrawerItem(
+                            id = "series",
+                            title = "Series",
+                            icon = Icons.Default.Tv,
+                        ),
+                    ),
+                onItemClick = { item ->
+                    when (item.id) {
+                        "home" -> {
+                            navController.navigate("my_app") {
+                                popUpTo("my_app") { inclusive = true }
+                            }
                         }
-                    }
 
-                    "characters" -> {
-                        navController.navigate("characters_screen") {
-                            popUpTo("my_app") { inclusive = true }
+                        "characters" -> {
+                            navController.navigate("characters_screen") {
+                                popUpTo("my_app") { inclusive = true }
+                            }
                         }
-                    }
 
-                    "comics" -> {
-                        navController.navigate("comics_screen") {
-                            popUpTo("my_app") { inclusive = true }
+                        "comics" -> {
+                            navController.navigate("comics_screen") {
+                                popUpTo("my_app") { inclusive = true }
+                            }
                         }
-                    }
 
-                    "series" -> {
-                        navController.navigate("series_screen") {
-                            popUpTo("my_app") { inclusive = true }
+                        "series" -> {
+                            navController.navigate("series_screen") {
+                                popUpTo("my_app") { inclusive = true }
+                            }
                         }
-                    }
 
-                    "events" -> {
-                        navController.navigate("events_screen") {
-                            popUpTo("my_app") { inclusive = true }
+                        "events" -> {
+                            navController.navigate("events_screen") {
+                                popUpTo("my_app") { inclusive = true }
+                            }
                         }
-                    }
 
-                    "creators" -> {
-                        navController.navigate("creators_screen") {
-                            popUpTo("my_app") { inclusive = true }
+                        "creators" -> {
+                            navController.navigate("creators_screen") {
+                                popUpTo("my_app") { inclusive = true }
+                            }
                         }
-                    }
 
-                    "stories" -> {
-                        navController.navigate("stories_screen") {
-                            popUpTo("my_app") { inclusive = true }
+                        "stories" -> {
+                            navController.navigate("stories_screen") {
+                                popUpTo("my_app") { inclusive = true }
+                            }
                         }
                     }
-                }
-                scope.launch {
-                    drawerState.close()
-                }
-            })
+                    scope.launch {
+                        drawerState.close()
+                    }
+                },
+            )
             HorizontalDivider()
         }
     }) {
@@ -174,7 +199,7 @@ fun MyApp(modifier: Modifier = Modifier) {
             NavHost(
                 navController = navController,
                 startDestination = "my_app",
-                modifier.padding(contentPadding)
+                modifier.padding(contentPadding),
             ) {
                 composable("my_app") {
                     MainScreenContent()
@@ -202,7 +227,6 @@ fun MyApp(modifier: Modifier = Modifier) {
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreenContent(modifier: Modifier = Modifier) {
@@ -217,9 +241,10 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
     val isLoadingComics by viewModel.isLoadingComics.collectAsState()
     val isLoadingSeries by viewModel.isLoadingSeries.collectAsState()
     val isLoadingEvents by viewModel.isLoadingEvents.collectAsState()
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
     var isCharacterSheetOpen by rememberSaveable { mutableStateOf(false) }
     var isComicSheetOpen by rememberSaveable { mutableStateOf(false) }
     var isEventSheetOpen by rememberSaveable { mutableStateOf(false) }
@@ -240,7 +265,7 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
                 CharacterDetailContent(
                     character = character,
                     comics = charactersState.comics,
-                    isLoadingComics = charactersState.isLoadingComics
+                    isLoadingComics = charactersState.isLoadingComics,
                 )
             }
         }
@@ -255,7 +280,7 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
                 ComicDetailContent(
                     comic = comic,
                     characters = comicState.characters,
-                    isLoadingCharacters = comicState.isLoading
+                    isLoadingCharacters = comicState.isLoading,
                 )
             }
         }
@@ -285,30 +310,35 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
     Column(
         modifier
             .padding(8.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         Text(text = "Characters", style = MaterialTheme.typography.displaySmall, fontSize = 20.sp)
 
         Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(220.dp), contentAlignment = Alignment.Center
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+            contentAlignment = Alignment.Center,
         ) {
             if (isLoadingCharacters) {
                 CircularProgressIndicator()
             } else {
                 LazyRow {
                     items(characters) { character ->
-                        MainCharacterItem(character = character, modifier = modifier.clickable {
-                            clickedItemId = character.id
-                            isCharacterSheetOpen = true
-                            selectedCharacter.value = character
-                            coroutineScope.launch {
-                                viewModel.getCharactersComicsById(character.id)
-                                bottomSheetState.show()
-                            }
-
-                        })
+                        MainCharacterItem(
+                            character = character,
+                            modifier =
+                                modifier.clickable {
+                                    clickedItemId = character.id
+                                    isCharacterSheetOpen = true
+                                    selectedCharacter.value = character
+                                    coroutineScope.launch {
+                                        viewModel.getCharactersComicsById(character.id)
+                                        bottomSheetState.show()
+                                    }
+                                },
+                        )
                     }
                 }
             }
@@ -319,24 +349,30 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
         Text(text = "Comics", style = MaterialTheme.typography.displaySmall, fontSize = 20.sp)
 
         Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(220.dp), contentAlignment = Alignment.Center
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+            contentAlignment = Alignment.Center,
         ) {
             if (isLoadingComics) {
                 CircularProgressIndicator()
             } else {
                 LazyRow {
                     items(comics) { comic ->
-                        MainComicItem(comic = comic, modifier = modifier.clickable {
-                            clickedItemId = comic.id
-                            isComicSheetOpen = true
-                            selectedComic.value = comic
-                            coroutineScope.launch {
-                                viewModel.getCharactersComicById(comic.id)
-                                bottomSheetState.show()
-                            }
-                        })
+                        MainComicItem(
+                            comic = comic,
+                            modifier =
+                                modifier.clickable {
+                                    clickedItemId = comic.id
+                                    isComicSheetOpen = true
+                                    selectedComic.value = comic
+                                    coroutineScope.launch {
+                                        viewModel.getCharactersComicById(comic.id)
+                                        bottomSheetState.show()
+                                    }
+                                },
+                        )
                     }
                 }
             }
@@ -347,23 +383,29 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
         Text(text = "Series", style = MaterialTheme.typography.displaySmall, fontSize = 20.sp)
 
         Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(220.dp), contentAlignment = Alignment.Center
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+            contentAlignment = Alignment.Center,
         ) {
             if (isLoadingSeries) {
                 CircularProgressIndicator()
             } else {
                 LazyRow {
                     items(series) { serie ->
-                        MainSeriesItem(serie = serie, modifier = modifier.clickable {
-                            clickedItemId = serie.id
-                            isSeriesSheetOpen = true
-                            selectedSeries.value = serie
-                            coroutineScope.launch {
-                                bottomSheetState.show()
-                            }
-                        })
+                        MainSeriesItem(
+                            serie = serie,
+                            modifier =
+                                modifier.clickable {
+                                    clickedItemId = serie.id
+                                    isSeriesSheetOpen = true
+                                    selectedSeries.value = serie
+                                    coroutineScope.launch {
+                                        bottomSheetState.show()
+                                    }
+                                },
+                        )
                     }
                 }
             }
@@ -373,23 +415,29 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
         Text(text = "Events", style = MaterialTheme.typography.displaySmall, fontSize = 20.sp)
 
         Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(220.dp), contentAlignment = Alignment.Center
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+            contentAlignment = Alignment.Center,
         ) {
             if (isLoadingEvents) {
                 CircularProgressIndicator()
             } else {
                 LazyRow {
                     items(events) { event ->
-                        MainEventItem(event = event, modifier = modifier.clickable {
-                            clickedItemId = event.id
-                            isEventSheetOpen = true
-                            selectedEvent.value = event
-                            coroutineScope.launch {
-                                bottomSheetState.show()
-                            }
-                        })
+                        MainEventItem(
+                            event = event,
+                            modifier =
+                                modifier.clickable {
+                                    clickedItemId = event.id
+                                    isEventSheetOpen = true
+                                    selectedEvent.value = event
+                                    coroutineScope.launch {
+                                        bottomSheetState.show()
+                                    }
+                                },
+                        )
                     }
                 }
             }
@@ -399,72 +447,72 @@ fun MainScreenContent(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MainEventItem(event: Event, modifier: Modifier = Modifier) {
+fun MainEventItem(
+    event: Event,
+    modifier: Modifier = Modifier,
+) {
     ElevatedCard(
-        modifier = modifier.padding(8.dp)
+        modifier = modifier.padding(8.dp),
     ) {
         GlideImage(
             model = "${event.thumbnail.path}/portrait_uncanny.${event.thumbnail.extension}",
             contentDescription = event.title,
             modifier = modifier.fillMaxWidth(),
-            contentScale = ContentScale.None
+            contentScale = ContentScale.None,
         )
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MainSeriesItem(serie: Series, modifier: Modifier = Modifier) {
+fun MainSeriesItem(
+    serie: Series,
+    modifier: Modifier = Modifier,
+) {
     ElevatedCard(
-        modifier = modifier.padding(8.dp)
+        modifier = modifier.padding(8.dp),
     ) {
         GlideImage(
             model = "${serie.thumbnail.path}/portrait_uncanny.${serie.thumbnail.extension}",
             contentDescription = serie.title,
             modifier = modifier.fillMaxWidth(),
-            contentScale = ContentScale.None
+            contentScale = ContentScale.None,
         )
     }
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MainComicItem(comic: Comic, modifier: Modifier = Modifier) {
-
+fun MainComicItem(
+    comic: Comic,
+    modifier: Modifier = Modifier,
+) {
     ElevatedCard(
-        modifier = modifier.padding(8.dp)
+        modifier = modifier.padding(8.dp),
     ) {
         GlideImage(
             model = "${comic.thumbnail.path}/portrait_uncanny.${comic.thumbnail.extension}",
             contentDescription = comic.title,
             modifier = modifier.fillMaxWidth(),
-            contentScale = ContentScale.None
+            contentScale = ContentScale.None,
         )
     }
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MainCharacterItem(
-    character: Character, modifier: Modifier = Modifier
+    character: Character,
+    modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
-        modifier = modifier.padding(8.dp)
+        modifier = modifier.padding(8.dp),
     ) {
         GlideImage(
             model = "${character.thumbnail.path}/portrait_uncanny.${character.thumbnail.extension}",
             contentDescription = character.name,
             modifier = modifier.fillMaxWidth(),
-            contentScale = ContentScale.None
+            contentScale = ContentScale.None,
         )
     }
 }
-
-
-
-
-
-
-

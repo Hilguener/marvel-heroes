@@ -18,5 +18,5 @@ data class Series(
     val thumbnail: Thumbnail,
     val title: String,
     val type: String,
-    val urls: List<Url>
+    val urls: List<Url>,
 )

@@ -7,8 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.hilguener.marvelsuperheroes.data.util.Constants
-import com.hilguener.marvelsuperheroes.domain.use_case.ManagerUseCase
-import com.hilguener.marvelsuperheroes.presentation.screen.characters.vm.CharactersViewModel.Event
+import com.hilguener.marvelsuperheroes.domain.usecase.ManagerUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,27 +17,28 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 
 class EventsViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
-
     private val searchQuery = MutableStateFlow<String?>(null)
 
-    private val _eventChannel = Channel<Event>()
-    val events = _eventChannel.receiveAsFlow()
+    private val eventChannel = Channel<Event>()
+    val events = eventChannel.receiveAsFlow()
 
     fun setSearchQuery(query: String?) {
         searchQuery.value = query
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val eventsPager = searchQuery.flatMapLatest { query ->
-        Pager(
-            config = PagingConfig(pageSize = Constants.LIMIT, enablePlaceholders = false),
-            pagingSourceFactory = { managerUseCase.getEventsPagingSource(query) }
-        ).flow
-            .cachedIn(viewModelScope)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+    val eventsPager =
+        searchQuery.flatMapLatest { query ->
+            Pager(
+                config = PagingConfig(pageSize = Constants.LIMIT, enablePlaceholders = false),
+                pagingSourceFactory = { managerUseCase.getEventsPagingSource(query) },
+            ).flow
+                .cachedIn(viewModelScope)
+        }.stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
     sealed class Event {
         data class ShowError(val message: String) : Event()
+
         data class ShowSuccess(val message: String = "Success") : Event()
     }
 }

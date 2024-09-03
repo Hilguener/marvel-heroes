@@ -1,9 +1,6 @@
 package com.hilguener.marvelsuperheroes.presentation.screen.comics
 
 import android.widget.Toast
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,7 +42,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -71,9 +67,10 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
     val viewModel: ComicsViewModel = koinViewModel()
     val state = viewModel.state
     val context = LocalContext.current
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     val selectedComic = remember { mutableStateOf<Comic?>(null) }
     val coroutineScope = rememberCoroutineScope()
@@ -105,7 +102,7 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
                 ComicDetailContent(
                     comic = comic,
                     characters = state.characters,
-                    isLoadingCharacters = state.isLoading
+                    isLoadingCharacters = state.isLoading,
                 )
             }
         }
@@ -119,44 +116,49 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
                     searchQuery.value = query
                 },
                 label = { Text("Search comics...") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = null)
                 },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
-                        localFocusManager.clearFocus()
-                    }
-                )
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Search,
+                    ),
+                keyboardActions =
+                    KeyboardActions(
+                        onSearch = {
+                            viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
+                            localFocusManager.clearFocus()
+                        },
+                    ),
             )
             Box(modifier = Modifier.fillMaxSize()) {
                 if (comics.loadState.refresh is LoadState.Loading) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
                 } else if (comics.itemCount == 0 && searchQuery.value.isNotBlank()) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "No comics found",
                             style = MaterialTheme.typography.displaySmall,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 } else {
@@ -170,16 +172,17 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
                                 comic?.let {
                                     ComicItem(
                                         comic = it,
-                                        modifier = Modifier
-                                            .clickable {
-                                                isSheetOpen = true
-                                                selectedComic.value = it
-                                                clickedItemId = it.id
-                                                coroutineScope.launch {
-                                                    viewModel.getCharactersComicById(it.id)
-                                                    bottomSheetState.show()
-                                                }
-                                            }
+                                        modifier =
+                                            Modifier
+                                                .clickable {
+                                                    isSheetOpen = true
+                                                    selectedComic.value = it
+                                                    clickedItemId = it.id
+                                                    coroutineScope.launch {
+                                                        viewModel.getCharactersComicById(it.id)
+                                                        bottomSheetState.show()
+                                                    }
+                                                },
                                     )
                                 }
                             }
@@ -187,16 +190,17 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
                             if (comics.loadState.append is LoadState.Loading) {
                                 item(span = { GridItemSpan(maxLineSpan) }) {
                                     Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 16.dp),
-                                        contentAlignment = Alignment.Center
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp),
+                                        contentAlignment = Alignment.Center,
                                     ) {
                                         CircularProgressIndicator()
                                     }
                                 }
                             }
-                        }
+                        },
                     )
 
                     if (comics.loadState.append is LoadState.Error) {
@@ -206,7 +210,6 @@ internal fun ComicsScreen(modifier: Modifier = Modifier) {
                 }
             }
         }
-
     }
 }
 
@@ -216,26 +219,28 @@ fun ComicDetailContent(
     comic: Comic?,
     isLoadingCharacters: Boolean,
     characters: List<Character>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(16.dp),
     ) {
         item {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 GlideImage(
                     model = "${comic?.thumbnail?.path}/portrait_fantastic.${comic?.thumbnail?.extension}",
                     contentDescription = comic?.title,
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(260.dp)
-                        .clip(RoundedCornerShape(40.dp)),
-                    contentScale = ContentScale.Fit
+                    modifier =
+                        Modifier
+                            .width(200.dp)
+                            .height(260.dp)
+                            .clip(RoundedCornerShape(40.dp)),
+                    contentScale = ContentScale.Fit,
                 )
                 Spacer(modifier = Modifier.width(16.dp))
 
@@ -243,7 +248,7 @@ fun ComicDetailContent(
                     text = comic?.title ?: "No title found",
                     style = MaterialTheme.typography.displaySmall,
                     fontSize = 24.sp,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
 
@@ -260,8 +265,9 @@ fun ComicDetailContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = comic?.description.takeIf { it!!.isNotBlank() }
-                    ?: "No description available.",
+                text =
+                    comic?.description.takeIf { it!!.isNotBlank() }
+                        ?: "No description available.",
                 textAlign = TextAlign.Justify,
                 style = MaterialTheme.typography.bodyMedium,
                 fontSize = 17.sp,
@@ -343,7 +349,7 @@ fun ComicDetailContent(
                         Text(
                             text = "No characters found",
                             style = MaterialTheme.typography.bodyMedium,
-                            fontSize = 17.sp
+                            fontSize = 17.sp,
                         )
                     }
                 }
@@ -358,21 +364,25 @@ fun ComicDetailContent(
     }
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ComicItem(comic: Comic, modifier: Modifier = Modifier) {
+fun ComicItem(
+    comic: Comic,
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = modifier
-            .padding(8.dp)
+        modifier =
+            modifier
+                .padding(8.dp),
     ) {
         GlideImage(
             model = "${comic.thumbnail.path}/portrait_incredible.${comic.thumbnail.extension}",
             contentDescription = comic.title,
-            modifier = modifier
-                .size(270.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(26.dp)),
+            modifier =
+                modifier
+                    .size(270.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(26.dp)),
         )
         Spacer(modifier = modifier.height(8.dp))
         Text(
@@ -381,9 +391,9 @@ fun ComicItem(comic: Comic, modifier: Modifier = Modifier) {
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
-            modifier = modifier
-                .fillMaxWidth()
+            modifier =
+                modifier
+                    .fillMaxWidth(),
         )
     }
 }
-

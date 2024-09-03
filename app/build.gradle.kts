@@ -55,6 +55,11 @@ android {
             ),
         )
     }
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -88,14 +93,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
     // Koin
-    implementation (libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.compose)
 
     // Glide
     implementation(libs.compose)
@@ -109,15 +113,14 @@ dependencies {
     // Material Icons Extended
     implementation(libs.androidx.material.icons.extended)
 
-    //Room
+    // Room
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
 
-    //Paging
+    // Paging
     implementation(libs.androidx.paging.runtime.ktx)
-    implementation (libs.androidx.paging.compose)
-
+    implementation(libs.androidx.paging.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

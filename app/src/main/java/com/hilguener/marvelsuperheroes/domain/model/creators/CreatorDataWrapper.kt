@@ -7,5 +7,5 @@ data class CreatorDataWrapper(
     val copyright: String,
     val `data`: CreatorDataContainer,
     val etag: String,
-    val status: String
+    val status: String,
 )

@@ -8,11 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.hilguener.marvelsuperheroes.domain.model.character.Character
 import com.hilguener.marvelsuperheroes.domain.model.comic.Comic
 import com.hilguener.marvelsuperheroes.domain.model.series.Series
-import com.hilguener.marvelsuperheroes.domain.use_case.ManagerUseCase
-import com.hilguener.marvelsuperheroes.domain.use_case.state.CharactersState
-import com.hilguener.marvelsuperheroes.domain.use_case.state.ComicsState
-import com.hilguener.marvelsuperheroes.presentation.screen.characters.vm.CharactersViewModel
-import com.hilguener.marvelsuperheroes.presentation.screen.comics.vm.ComicsViewModel.Event
+import com.hilguener.marvelsuperheroes.domain.usecase.ManagerUseCase
+import com.hilguener.marvelsuperheroes.domain.usecase.state.CharactersState
+import com.hilguener.marvelsuperheroes.domain.usecase.state.ComicsState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +19,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
-
     var comicState by mutableStateOf(ComicsState())
     var characterState by mutableStateOf(CharactersState())
 
@@ -51,11 +48,12 @@ class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
     private val _isLoadingEvents = MutableStateFlow(false)
     val isLoadingEvents: StateFlow<Boolean> = _isLoadingEvents.asStateFlow()
 
-    private val _eventChannel = Channel<Event>()
-    val events = _eventChannel.receiveAsFlow()
+    private val eventChannel = Channel<Event>()
+    val events = eventChannel.receiveAsFlow()
 
     sealed class Event {
         data class ShowError(val message: String) : Event()
+
         data class ShowSuccess(val data: List<Any>) : Event()
     }
 
@@ -73,13 +71,14 @@ class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
     private fun loadCharactersCarrousel() {
         viewModelScope.launch {
             _isLoadingCharacters.value = true
-            val characters = managerUseCase.getCharactersCarrousel { errorMsg ->
-                _eventChannel.send(Event.ShowError(errorMsg))
-            }
+            val characters =
+                managerUseCase.getCharactersCarrousel { errorMsg ->
+                    eventChannel.send(Event.ShowError(errorMsg))
+                }
             _isLoadingCharacters.value = false
             characters?.let {
                 _charactersCarrousel.value = it
-                _eventChannel.send(Event.ShowSuccess(it))
+                eventChannel.send(Event.ShowSuccess(it))
             }
         }
     }
@@ -87,13 +86,14 @@ class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
     private fun loadComicsCarrousel() {
         viewModelScope.launch {
             _isLoadingComics.value = true
-            val comics = managerUseCase.getComicsCarrousel { errorMsg ->
-                _eventChannel.send(Event.ShowError(errorMsg))
-            }
+            val comics =
+                managerUseCase.getComicsCarrousel { errorMsg ->
+                    eventChannel.send(Event.ShowError(errorMsg))
+                }
             _isLoadingComics.value = false
             comics?.let {
                 _comicsCarrousel.value = it
-                _eventChannel.send(Event.ShowSuccess(it))
+                eventChannel.send(Event.ShowSuccess(it))
             }
         }
     }
@@ -101,13 +101,14 @@ class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
     private fun loadSeriesCarrousel() {
         viewModelScope.launch {
             _isLoadingSeries.value = true
-            val series = managerUseCase.getSeriesCarrousel { errorMsg ->
-                _eventChannel.send(Event.ShowError(errorMsg))
-            }
+            val series =
+                managerUseCase.getSeriesCarrousel { errorMsg ->
+                    eventChannel.send(Event.ShowError(errorMsg))
+                }
             _isLoadingSeries.value = false
             series?.let {
                 _seriesCarrousel.value = it
-                _eventChannel.send(Event.ShowSuccess(it))
+                eventChannel.send(Event.ShowSuccess(it))
             }
         }
     }
@@ -115,13 +116,14 @@ class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
     private fun loadEventsCarrousel() {
         viewModelScope.launch {
             _isLoadingEvents.value = true
-            val series = managerUseCase.getEventsCarrousel { errorMsg ->
-                _eventChannel.send(Event.ShowError(errorMsg))
-            }
+            val series =
+                managerUseCase.getEventsCarrousel { errorMsg ->
+                    eventChannel.send(Event.ShowError(errorMsg))
+                }
             _isLoadingEvents.value = false
             series?.let {
                 _eventsCarrousel.value = it
-                _eventChannel.send(Event.ShowSuccess(it))
+                eventChannel.send(Event.ShowSuccess(it))
             }
         }
     }
@@ -129,9 +131,10 @@ class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
     fun getCharactersComicById(comicId: Int) {
         viewModelScope.launch {
             comicState = comicState.copy(isLoading = true, error = null)
-            val result = managerUseCase.getCharactersComicById(comicId) { errorMsg ->
-                _eventChannel.send(Event.ShowError(errorMsg))
-            }
+            val result =
+                managerUseCase.getCharactersComicById(comicId) { errorMsg ->
+                    eventChannel.send(Event.ShowError(errorMsg))
+                }
             result?.let {
                 comicState = comicState.copy(characters = it, isLoading = false)
             } ?: run {
@@ -143,9 +146,10 @@ class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
     fun getCharactersComicsById(characterId: Int) {
         viewModelScope.launch {
             characterState = characterState.copy(isLoadingComics = true, error = null)
-            val result = managerUseCase.getCharactersComicsById(characterId) { errorMsg ->
-                _eventChannel.send(Event.ShowError(errorMsg))
-            }
+            val result =
+                managerUseCase.getCharactersComicsById(characterId) { errorMsg ->
+                    eventChannel.send(Event.ShowError(errorMsg))
+                }
             result?.let {
                 characterState = characterState.copy(comics = it, isLoadingComics = false)
             } ?: run {
@@ -154,9 +158,3 @@ class HomeViewModel(private val managerUseCase: ManagerUseCase) : ViewModel() {
         }
     }
 }
-
-
-
-
-
-

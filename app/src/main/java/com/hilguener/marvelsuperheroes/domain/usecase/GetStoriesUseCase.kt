@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.domain.use_case
+package com.hilguener.marvelsuperheroes.domain.usecase
 
 import androidx.paging.PagingSource
 import com.hilguener.marvelsuperheroes.data.paging.StoriesPagingSource

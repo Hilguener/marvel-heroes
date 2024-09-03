@@ -26,7 +26,7 @@ class StoriesPagingSource(private val httpRepository: HttpRepository) : PagingSo
             LoadResult.Page(
                 data = stories,
                 prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
-                nextKey = if (nextPageNumber * Constants.LIMIT >= totalCount) null else nextKey
+                nextKey = if (nextPageNumber * Constants.LIMIT >= totalCount) null else nextKey,
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

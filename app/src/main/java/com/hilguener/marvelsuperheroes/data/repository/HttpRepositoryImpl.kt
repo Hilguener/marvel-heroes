@@ -11,7 +11,10 @@ import com.hilguener.marvelsuperheroes.domain.model.stories.StoryDataWrapper
 import retrofit2.Response
 
 class HttpRepositoryImpl(private val marvelApi: MarvelApi) : HttpRepository {
-    override suspend fun getCharacters(page: Int, name: String?): Response<CharactersDataWrapper> {
+    override suspend fun getCharacters(
+        page: Int,
+        name: String?,
+    ): Response<CharactersDataWrapper> {
         val offset = (page - 1) * Constants.LIMIT
         return marvelApi.getCharacters(offset = offset, nameStartsWith = name)
     }
@@ -20,7 +23,10 @@ class HttpRepositoryImpl(private val marvelApi: MarvelApi) : HttpRepository {
         return marvelApi.getCharacterComicsById(characterId)
     }
 
-    override suspend fun getComics(page: Int, name: String?): Response<ComicsDataWrapper> {
+    override suspend fun getComics(
+        page: Int,
+        name: String?,
+    ): Response<ComicsDataWrapper> {
         val offset = (page - 1) * Constants.LIMIT
         return marvelApi.getComics(offset = offset, titleStartsWith = name)
     }
@@ -33,12 +39,18 @@ class HttpRepositoryImpl(private val marvelApi: MarvelApi) : HttpRepository {
         return marvelApi.getComicCharactersById(comicId)
     }
 
-    override suspend fun getSeries(page: Int, name: String?): Response<SeriesDataWrapper> {
+    override suspend fun getSeries(
+        page: Int,
+        name: String?,
+    ): Response<SeriesDataWrapper> {
         val offset = (page - 1) * Constants.LIMIT
         return marvelApi.getSeries(offset = offset, titleStartsWith = name)
     }
 
-    override suspend fun getEvents(page: Int, name: String?): Response<EventDataWrapper> {
+    override suspend fun getEvents(
+        page: Int,
+        name: String?,
+    ): Response<EventDataWrapper> {
         val offset = (page - 1) * Constants.LIMIT
         return marvelApi.getEvents(offset = offset, nameStartsWith = name)
     }
@@ -48,7 +60,10 @@ class HttpRepositoryImpl(private val marvelApi: MarvelApi) : HttpRepository {
         return marvelApi.getStories(offset = offset)
     }
 
-    override suspend fun getCreators(page: Int, name: String?): Response<CreatorDataWrapper> {
+    override suspend fun getCreators(
+        page: Int,
+        name: String?,
+    ): Response<CreatorDataWrapper> {
         val offset = (page - 1) * Constants.LIMIT
         return marvelApi.getCreators(offset = offset, nameStartsWith = name)
     }
@@ -62,7 +77,7 @@ class HttpRepositoryImpl(private val marvelApi: MarvelApi) : HttpRepository {
     }
 
     override suspend fun getComicsCarrousel(): Response<ComicsDataWrapper> {
-       return marvelApi.getComicsCarrousel()
+        return marvelApi.getComicsCarrousel()
     }
 
     override suspend fun getSeriesCarrousel(): Response<SeriesDataWrapper> {
@@ -72,5 +87,4 @@ class HttpRepositoryImpl(private val marvelApi: MarvelApi) : HttpRepository {
     override suspend fun getEventsCarrousel(): Response<EventDataWrapper> {
         return marvelApi.getEventsCarrousel()
     }
-
 }

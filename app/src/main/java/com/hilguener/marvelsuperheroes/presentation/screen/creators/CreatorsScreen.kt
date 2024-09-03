@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -69,9 +67,10 @@ internal fun CreatorsScreen(modifier: Modifier = Modifier) {
     val state = viewModel.state
     val creators = viewModel.creatorsPager.collectAsLazyPagingItems()
     val context = LocalContext.current
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
     val searchQuery = rememberSaveable { mutableStateOf("") }
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     val selectedCreator = remember { mutableStateOf<Creator?>(null) }
@@ -100,7 +99,7 @@ internal fun CreatorsScreen(modifier: Modifier = Modifier) {
                 CreatorDetailContent(
                     creator = creator,
                     comics = state.comics,
-                    isLoadingComics = state.isLoadingComics
+                    isLoadingComics = state.isLoadingComics,
                 )
             }
         }
@@ -114,28 +113,32 @@ internal fun CreatorsScreen(modifier: Modifier = Modifier) {
                     searchQuery.value = query
                 },
                 label = { Text("Search creators...") },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = null)
                 },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search,
-                ),
-                keyboardActions = KeyboardActions(onSearch = {
-                    viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
-                    localFocusManager.clearFocus()
-                })
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Search,
+                    ),
+                keyboardActions =
+                    KeyboardActions(onSearch = {
+                        viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
+                        localFocusManager.clearFocus()
+                    }),
             )
             Box(modifier = modifier.weight(1f)) {
                 if (creators.loadState.refresh is LoadState.Loading) {
                     Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
@@ -144,23 +147,28 @@ internal fun CreatorsScreen(modifier: Modifier = Modifier) {
                         items(creators.itemCount) { index ->
                             val creator = creators[index]
                             creator?.let {
-                                CreatorItem(creator = it, modifier = modifier.clickable {
-                                    isSheetOpen = true
-                                    selectedCreator.value = it
-                                    coroutineScope.launch {
-                                        viewModel.getCreatorsComicsById(it.id)
-                                        bottomSheetState.show()
-                                    }
-                                })
+                                CreatorItem(
+                                    creator = it,
+                                    modifier =
+                                        modifier.clickable {
+                                            isSheetOpen = true
+                                            selectedCreator.value = it
+                                            coroutineScope.launch {
+                                                viewModel.getCreatorsComicsById(it.id)
+                                                bottomSheetState.show()
+                                            }
+                                        },
+                                )
                             }
                         }
                         if (creators.loadState.append is LoadState.Loading) {
                             item {
                                 Box(
-                                    modifier = modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 16.dp),
-                                    contentAlignment = Alignment.Center
+                                    modifier =
+                                        modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 16.dp),
+                                    contentAlignment = Alignment.Center,
                                 ) {
                                     CircularProgressIndicator()
                                 }
@@ -176,26 +184,30 @@ internal fun CreatorsScreen(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CreatorDetailContent(
-    creator: Creator?, modifier: Modifier = Modifier, comics: List<Comic>,
+    creator: Creator?,
+    modifier: Modifier = Modifier,
+    comics: List<Comic>,
     isLoadingComics: Boolean,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(16.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth(),
         ) {
             GlideImage(
                 model = "${creator?.thumbnail?.path}/portrait_uncanny.${creator?.thumbnail?.extension}",
                 contentDescription = creator?.fullName,
-                modifier = modifier
-                    .width(200.dp)
-                    .height(260.dp)
-                    .clip(RoundedCornerShape(40.dp)),
-                contentScale = ContentScale.Fit
+                modifier =
+                    modifier
+                        .width(200.dp)
+                        .height(260.dp)
+                        .clip(RoundedCornerShape(40.dp)),
+                contentScale = ContentScale.Fit,
             )
             Spacer(modifier = modifier.width(16.dp))
 
@@ -203,9 +215,8 @@ fun CreatorDetailContent(
                 text = creator?.fullName ?: "No full name found",
                 style = MaterialTheme.typography.displaySmall,
                 fontSize = 24.sp,
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier.fillMaxWidth(),
             )
-
         }
 
         Spacer(modifier = modifier.height(16.dp))
@@ -220,14 +231,14 @@ fun CreatorDetailContent(
 
         if (isLoadingComics) {
             CircularProgressIndicator(
-                modifier = modifier.align(Alignment.CenterHorizontally)
+                modifier = modifier.align(Alignment.CenterHorizontally),
             )
         } else {
             if (comics.isEmpty()) {
                 Text(
                     text = "No written comics available.",
                     textAlign = TextAlign.Center,
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier.fillMaxWidth(),
                 )
             } else {
                 LazyRow {
@@ -240,15 +251,17 @@ fun CreatorDetailContent(
     }
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CreatorItem(creator: Creator?, modifier: Modifier = Modifier) {
+fun CreatorItem(
+    creator: Creator?,
+    modifier: Modifier = Modifier,
+) {
     ElevatedCard(modifier = modifier.padding(8.dp)) {
         Row(
             modifier = modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             GlideImage(
                 model = creator?.thumbnail?.path + "/portrait_uncanny." + creator?.thumbnail?.extension,

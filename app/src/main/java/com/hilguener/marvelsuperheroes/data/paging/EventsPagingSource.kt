@@ -8,7 +8,7 @@ import com.hilguener.marvelsuperheroes.domain.model.events.Event
 
 class EventsPagingSource(
     private val eventRepository: HttpRepository,
-    private val name: String? = null
+    private val name: String? = null,
 ) : PagingSource<Int, Event>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Event> {
         return try {
@@ -21,7 +21,7 @@ class EventsPagingSource(
             LoadResult.Page(
                 data = events,
                 prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
-                nextKey = if (nextPageNumber * Constants.LIMIT >= totalCount) null else nextKey
+                nextKey = if (nextPageNumber * Constants.LIMIT >= totalCount) null else nextKey,
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

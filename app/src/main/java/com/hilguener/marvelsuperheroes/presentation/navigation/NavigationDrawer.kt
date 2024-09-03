@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,10 +27,11 @@ import com.hilguener.marvelsuperheroes.R
 @Composable
 fun DrawerHeader() {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 64.dp),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 64.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Image(painter = painterResource(id = R.drawable.marvel_header), contentDescription = null)
     }
@@ -42,30 +42,30 @@ fun DrawerBody(
     items: List<NavDrawerItem>,
     onItemClick: (NavDrawerItem) -> Unit,
     modifier: Modifier = Modifier,
-    itemTextStyle: TextStyle = TextStyle(fontSize = 18.sp)
+    itemTextStyle: TextStyle = TextStyle(fontSize = 18.sp),
 ) {
     LazyColumn(modifier = modifier) {
         items(items) { item ->
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onItemClick(item) }
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { onItemClick(item) }
+                        .padding(16.dp)
+                        .clip(RoundedCornerShape(8.dp)),
             ) {
                 Icon(
                     imageVector = item.icon,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = item.title,
                     style = itemTextStyle,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
     }
 }
-

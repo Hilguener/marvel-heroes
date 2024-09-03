@@ -7,5 +7,5 @@ data class EventDataWrapper(
     val copyright: String,
     val `data`: EventDataContainer,
     val etag: String,
-    val status: String
+    val status: String,
 )

@@ -8,7 +8,7 @@ import com.hilguener.marvelsuperheroes.domain.model.series.Series
 
 class SeriesPagingSource(
     private val seriesRepository: HttpRepository,
-    private val name: String? = null
+    private val name: String? = null,
 ) : PagingSource<Int, Series>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Series> {
         return try {
@@ -22,7 +22,7 @@ class SeriesPagingSource(
             LoadResult.Page(
                 data = characters,
                 prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
-                nextKey = if (nextPageNumber * Constants.LIMIT >= totalCount) null else nextKey
+                nextKey = if (nextPageNumber * Constants.LIMIT >= totalCount) null else nextKey,
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

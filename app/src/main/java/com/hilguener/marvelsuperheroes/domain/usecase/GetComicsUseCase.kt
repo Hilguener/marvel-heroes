@@ -1,4 +1,4 @@
-package com.hilguener.marvelsuperheroes.domain.use_case
+package com.hilguener.marvelsuperheroes.domain.usecase
 
 import androidx.paging.PagingSource
 import com.hilguener.marvelsuperheroes.data.paging.ComicsPagingSource
@@ -7,7 +7,7 @@ import com.hilguener.marvelsuperheroes.domain.model.comic.Comic
 
 class GetComicsUseCase(private val httpRepository: HttpRepository) {
     fun getPagingSource(
-        query: String? = null
+        query: String? = null,
     ): PagingSource<Int, Comic> {
         return ComicsPagingSource(httpRepository, query)
     }

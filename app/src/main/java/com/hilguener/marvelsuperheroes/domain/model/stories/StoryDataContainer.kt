@@ -5,5 +5,5 @@ data class StoryDataContainer(
     val limit: Int,
     val offset: Int,
     val results: List<Story>,
-    val total: Int
+    val total: Int,
 )

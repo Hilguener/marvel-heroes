@@ -16,5 +16,5 @@ data class Event(
     val stories: Stories,
     val thumbnail: Thumbnail,
     val title: String,
-    val urls: List<Url>
+    val urls: List<Url>,
 )

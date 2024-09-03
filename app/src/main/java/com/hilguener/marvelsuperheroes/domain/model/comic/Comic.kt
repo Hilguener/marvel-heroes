@@ -29,5 +29,5 @@ data class Comic(
     val upc: String,
     val urls: List<Url>,
     val variantDescription: String,
-    val variants: List<Variant>
+    val variants: List<Variant>,
 )

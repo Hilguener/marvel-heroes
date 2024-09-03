@@ -14,5 +14,5 @@ data class Creator(
     val stories: Stories,
     val suffix: String,
     val thumbnail: Thumbnail,
-    val urls: List<Url>
+    val urls: List<Url>,
 )

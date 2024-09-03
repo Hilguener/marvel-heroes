@@ -64,9 +64,10 @@ internal fun EventsScreen(modifier: Modifier = Modifier) {
     val searchQuery = rememberSaveable { mutableStateOf("") }
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
     val selectedEvent = remember { mutableStateOf<Event?>(null) }
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(context) {
         viewModel.events.collect { event ->
@@ -95,78 +96,91 @@ internal fun EventsScreen(modifier: Modifier = Modifier) {
 
     Scaffold(modifier = modifier) { paddingValues ->
         Column(modifier = modifier.fillMaxSize()) {
-            OutlinedTextField(value = searchQuery.value,
+            OutlinedTextField(
+                value = searchQuery.value,
                 onValueChange = { query ->
                     searchQuery.value = query
                 },
                 label = { Text("Search events...") },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier =
+                    modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = null)
                 },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search,
-                ),
-                keyboardActions = KeyboardActions(onSearch = {
-                    viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
-                    localFocusManager.clearFocus()
-                })
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Search,
+                    ),
+                keyboardActions =
+                    KeyboardActions(onSearch = {
+                        viewModel.setSearchQuery(searchQuery.value.takeIf { it.isNotBlank() })
+                        localFocusManager.clearFocus()
+                    }),
             )
             Box(modifier = modifier.weight(1f)) {
                 if (events.loadState.refresh is LoadState.Loading) {
                     Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
                 } else if (events.itemCount == 0 && searchQuery.value.isNotBlank()) {
                     Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "No events found",
                             style = MaterialTheme.typography.displaySmall,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
                         )
                     }
                 } else {
-                    LazyColumn(contentPadding = paddingValues,
+                    LazyColumn(
+                        contentPadding = paddingValues,
                         modifier = modifier.padding(horizontal = 16.dp),
                         content = {
                             items(events.itemCount) { index ->
                                 val event = events[index]
                                 event?.let {
-                                    EventItem(event = it, modifier = modifier.clickable {
-                                        selectedEvent.value = it
-                                        isSheetOpen = true
-                                        coroutineScope.launch {
-                                            bottomSheetState.show()
-                                        }
-                                    })
+                                    EventItem(
+                                        event = it,
+                                        modifier =
+                                            modifier.clickable {
+                                                selectedEvent.value = it
+                                                isSheetOpen = true
+                                                coroutineScope.launch {
+                                                    bottomSheetState.show()
+                                                }
+                                            },
+                                    )
                                 }
                             }
                             if (events.loadState.append is LoadState.Loading) {
                                 item {
                                     Box(
-                                        modifier = modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 16.dp),
-                                        contentAlignment = Alignment.Center
+                                        modifier =
+                                            modifier
+                                                .fillMaxWidth()
+                                                .padding(vertical = 16.dp),
+                                        contentAlignment = Alignment.Center,
                                     ) {
                                         CircularProgressIndicator()
                                     }
                                 }
                             }
-                        })
+                        },
+                    )
 
                     if (events.loadState.append is LoadState.Error) {
                         val e = events.loadState.append as LoadState.Error
@@ -186,33 +200,37 @@ fun EventDetailContent(event: Event?) {
             text = "No event details available.",
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
         )
         return
     }
 
     LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
     ) {
         item {
             Column {
                 event.thumbnail?.let { thumbnail ->
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(8.dp))
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp)),
                     ) {
                         GlideImage(
                             model = "${thumbnail.path}/standard_fantastic.${thumbnail.extension}",
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.None
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.None,
                         )
                     }
                 }
@@ -222,21 +240,23 @@ fun EventDetailContent(event: Event?) {
                 text = event.title?.takeIf { it.isNotBlank() } ?: "No title available.",
                 style = MaterialTheme.typography.displaySmall,
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = event.description?.takeIf { it.isNotBlank() } ?: "No description available.",
                 textAlign = TextAlign.Justify,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
             ) {
                 Text(text = "Start: ", style = MaterialTheme.typography.displaySmall)
                 Spacer(modifier = Modifier.width(4.dp))
@@ -244,7 +264,7 @@ fun EventDetailContent(event: Event?) {
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = "End: ", style = MaterialTheme.typography.displaySmall)
                 Spacer(modifier = Modifier.width(4.dp))
@@ -254,33 +274,35 @@ fun EventDetailContent(event: Event?) {
     }
 }
 
-
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun EventItem(event: Event?, modifier: Modifier = Modifier) {
+fun EventItem(
+    event: Event?,
+    modifier: Modifier = Modifier,
+) {
     ElevatedCard(modifier = modifier.padding(8.dp)) {
         Row(
-            verticalAlignment = Alignment.CenterVertically, modifier = modifier.wrapContentSize()
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier.wrapContentSize(),
         ) {
             GlideImage(
                 model = "${event?.thumbnail?.path}.${event?.thumbnail?.extension}",
                 contentDescription = null,
-                modifier = modifier
-                    .width(200.dp)
-                    .height(260.dp),
-                contentScale = ContentScale.None
+                modifier =
+                    modifier
+                        .width(200.dp)
+                        .height(260.dp),
+                contentScale = ContentScale.None,
             )
             Spacer(modifier = modifier.width(8.dp))
             Column {
-                Text(text = event?.title?.takeIf { it.isNotBlank() } ?: "No title available.",
+                Text(
+                    text = event?.title?.takeIf { it.isNotBlank() } ?: "No title available.",
                     style = MaterialTheme.typography.displaySmall,
                     textAlign = TextAlign.Center,
-                    modifier = modifier.fillMaxWidth())
+                    modifier = modifier.fillMaxWidth(),
+                )
             }
-
         }
     }
-
 }
-

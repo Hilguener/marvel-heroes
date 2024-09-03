@@ -20,7 +20,7 @@ interface MarvelApi {
         @Query("hash") hash: String = Constants.hash(),
         @Query("offset") offset: Int = 0,
         @Query("limit") limit: Int = Constants.LIMIT,
-        @Query("nameStartsWith") nameStartsWith: String? = null
+        @Query("nameStartsWith") nameStartsWith: String? = null,
     ): Response<CharactersDataWrapper>
 
     @GET("/v1/public/characters/{characterId}/comics")
@@ -40,7 +40,7 @@ interface MarvelApi {
         @Query("hash") hash: String = Constants.hash(),
         @Query("offset") offset: Int = 50,
         @Query("limit") limit: Int = Constants.LIMIT,
-        @Query("titleStartsWith") titleStartsWith: String? = null
+        @Query("titleStartsWith") titleStartsWith: String? = null,
     ): Response<ComicsDataWrapper>
 
     @GET("/v1/public/comics/{comicId}/characters")
@@ -70,7 +70,7 @@ interface MarvelApi {
         @Query("hash") hash: String = Constants.hash(),
         @Query("offset") offset: Int = 50,
         @Query("limit") limit: Int = Constants.LIMIT,
-        @Query("titleStartsWith") titleStartsWith: String? = null
+        @Query("titleStartsWith") titleStartsWith: String? = null,
     ): Response<SeriesDataWrapper>
 
     @GET("/v1/public/events")
@@ -80,7 +80,7 @@ interface MarvelApi {
         @Query("hash") hash: String = Constants.hash(),
         @Query("offset") offset: Int = 0,
         @Query("limit") limit: Int = Constants.LIMIT,
-        @Query("nameStartsWith") nameStartsWith: String? = null
+        @Query("nameStartsWith") nameStartsWith: String? = null,
     ): Response<EventDataWrapper>
 
     @GET("/v1/public/stories")
@@ -99,7 +99,7 @@ interface MarvelApi {
         @Query("hash") hash: String = Constants.hash(),
         @Query("offset") offset: Int = 0,
         @Query("limit") limit: Int = Constants.LIMIT,
-        @Query("nameStartsWith") nameStartsWith: String? = null
+        @Query("nameStartsWith") nameStartsWith: String? = null,
     ): Response<CreatorDataWrapper>
 
     @GET("/v1/public/creators/{creatorId}/comics")
@@ -129,7 +129,6 @@ interface MarvelApi {
         @Query("offset") offset: Int = 100,
         @Query("limit") limit: Int = 20,
     ): Response<ComicsDataWrapper>
-
 
     @GET("/v1/public/series")
     suspend fun getSeriesCarrousel(

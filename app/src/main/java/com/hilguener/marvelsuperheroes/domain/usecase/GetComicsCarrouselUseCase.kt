@@ -1,12 +1,12 @@
-package com.hilguener.marvelsuperheroes.domain.use_case
+package com.hilguener.marvelsuperheroes.domain.usecase
 
 import com.hilguener.marvelsuperheroes.data.repository.HttpRepository
-import com.hilguener.marvelsuperheroes.domain.model.events.Event
+import com.hilguener.marvelsuperheroes.domain.model.comic.Comic
 
-class GetEventsCarrouselUseCase(private val repository: HttpRepository) {
-    suspend operator fun invoke(haveError: suspend (String) -> Unit): List<Event>? {
+class GetComicsCarrouselUseCase(private val repository: HttpRepository) {
+    suspend operator fun invoke(haveError: suspend (String) -> Unit): List<Comic>? {
         return try {
-            val response = repository.getEventsCarrousel()
+            val response = repository.getComicsCarrousel()
             if (response.isSuccessful) {
                 response.body()?.data?.results
             } else {

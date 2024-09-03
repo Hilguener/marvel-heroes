@@ -1,10 +1,13 @@
-package com.hilguener.marvelsuperheroes.domain.use_case
+package com.hilguener.marvelsuperheroes.domain.usecase
 
 import com.hilguener.marvelsuperheroes.data.repository.HttpRepository
 import com.hilguener.marvelsuperheroes.domain.model.comic.Comic
 
 class GetCharactersComicsByIdUseCase(private val repository: HttpRepository) {
-    suspend operator fun invoke(characterId: Int, haveError: suspend (String) -> Unit): List<Comic>? {
+    suspend operator fun invoke(
+        characterId: Int,
+        haveError: suspend (String) -> Unit,
+    ): List<Comic>? {
         return try {
             val response = repository.getCharacterComicsById(characterId)
             if (response.isSuccessful) {
