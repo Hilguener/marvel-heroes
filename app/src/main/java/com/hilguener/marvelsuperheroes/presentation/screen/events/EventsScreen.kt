@@ -203,7 +203,6 @@ fun EventDetailContent(event: Event?) {
                 event.thumbnail?.let { thumbnail ->
                     Box(
                         modifier = Modifier
-                            .height(260.dp)
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
                     ) {
@@ -213,7 +212,7 @@ fun EventDetailContent(event: Event?) {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(RoundedCornerShape(8.dp)),
-                            contentScale = ContentScale.FillBounds
+                            contentScale = ContentScale.None
                         )
                     }
                 }

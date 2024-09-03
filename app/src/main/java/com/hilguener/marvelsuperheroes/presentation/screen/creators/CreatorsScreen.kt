@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -217,17 +219,21 @@ fun CreatorDetailContent(
         Spacer(modifier = modifier.height(8.dp))
 
         if (isLoadingComics) {
-            Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            CircularProgressIndicator(
+                modifier = modifier.align(Alignment.CenterHorizontally)
+            )
         } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(comics) { comic ->
-                    ComicItem(comic)
+            if (comics.isEmpty()) {
+                Text(
+                    text = "No written comics available.",
+                    textAlign = TextAlign.Center,
+                    modifier = modifier.fillMaxWidth()
+                )
+            } else {
+                LazyRow {
+                    items(comics) { comic ->
+                        ComicItem(comic)
+                    }
                 }
             }
         }
