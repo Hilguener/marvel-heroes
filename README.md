@@ -1,6 +1,12 @@
 # Marvel Heroes
 
-Aplicativo que aproveita a <a href= "https://developer.marvel.com/docs#!/public/getCreatorCollection_get_0">Api da Marvel</a> para acessar dados sobre personagens, revistas em quadrinhos, histórias, eventos, criadores e series sobre o universo da marvel.
+Aplicativo que aproveita a <a href= "https://developer.marvel.com/docs#!/public/getCreatorCollection_get_0">Api da Marvel</a> para acessar dados sobre personagens, revistas em quadrinhos, histórias, eventos, criadores e series sobre o universo da marvel. 
+
+## Como usar
+- Clone este projeto.
+- Vá até a documentação da API e retire a sua PUBLIC API KEY e PRIVATE API KEY
+- No arquivo local.properties, crie essas duas contantes e cole os respectivos valores nelas.
+<img src="https://private-user-images.githubusercontent.com/97263610/364168835-7d87a0c9-0a50-47e2-b6f1-9fa80a4de8f7.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjU0MDQ0MzEsIm5iZiI6MTcyNTQwNDEzMSwicGF0aCI6Ii85NzI2MzYxMC8zNjQxNjg4MzUtN2Q4N2EwYzktMGE1MC00N2UyLWI2ZjEtOWZhODBhNGRlOGY3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA5MDMlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwOTAzVDIyNTUzMVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWQwZWRlZTI4NTM5Y2ZhMGI2ZjJlY2NiZGEyMDJhMzEzZjNmZTgzNTZmZGZkMmI0YmE4OTBlNGRjYzllMjg2MDAmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.ULJOkehew9AH_7xJUZm5KsO1cX_8l8LPfk1fxh81C9Y">
 
 ## Features
 <ul>
