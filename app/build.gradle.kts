@@ -123,6 +123,10 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     testImplementation(libs.junit)
+    testImplementation (libs.mockk.mockk)
+    testImplementation (libs.jetbrains.kotlinx.coroutines.test)
+    testImplementation (libs.okhttp3.mockwebserver)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
